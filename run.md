@@ -91,16 +91,28 @@ This command will:
    # Google Maps API Key (Required)
    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_google_maps_api_key
 
+   # Web3Forms Access Key (Required for contact form)
+   NEXT_PUBLIC_WEB3FORMS_KEY=your_actual_web3forms_access_key
+
    # Environment
    NODE_ENV=development
    ```
 
-4. **Obtaining Google Maps API Key**:
+4. **Obtaining API Keys**:
+
+   **Google Maps API Key**:
    - Visit: https://console.cloud.google.com/apis/credentials
    - Create a new project or select existing
    - Enable "Maps JavaScript API"
    - Create credentials (API Key)
    - Copy the API key and paste it in `.env.local`
+
+   **Web3Forms Access Key** (free, no credit card required):
+   - Visit: https://web3forms.com
+   - Enter your email address where you want to receive form submissions
+   - Check your email and copy the Access Key
+   - Paste it in `.env.local`
+   - No signup or account creation required!
 
 ## Development Environment
 
@@ -413,6 +425,26 @@ cat .env.local | grep GOOGLE_MAPS
 
 # 4. Restart development server
 npm run dev
+```
+
+#### Issue 6: Contact Form Not Working
+
+**Error**:
+Form shows error message when submitting
+
+**Solution**:
+```bash
+# 1. Check if Web3Forms key is set
+cat .env.local | grep WEB3FORMS
+
+# 2. Verify the key is valid
+# Visit https://web3forms.com and check your email for the key
+
+# 3. Restart development server
+npm run dev
+
+# 4. Test form submission
+# Check browser console for any errors
 ```
 
 #### Issue 4: Build Fails

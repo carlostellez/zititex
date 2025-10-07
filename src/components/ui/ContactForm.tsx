@@ -120,19 +120,38 @@ export function ContactForm({ className = '' }: ContactFormProps) {
     setSubmitStatus('idle');
 
     try {
-      const response = await fetch(contactData.apiEndpoint, {
+      // Web3Forms endpoint
+      const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '';
+      
+      if (!WEB3FORMS_KEY) {
+        console.error('Web3Forms API key not configured');
+        setSubmitStatus('error');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Prepare form data for Web3Forms
+      const submitData = {
+        access_key: WEB3FORMS_KEY,
+        subject: `Nuevo contacto desde Zititex - ${formData.name}`,
+        from_name: formData.name,
+        ...formData,
+        timestamp: new Date().toISOString(),
+        source: 'website_contact_form'
+      };
+
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          timestamp: new Date().toISOString(),
-          source: 'website_contact_form'
-        }),
+        body: JSON.stringify(submitData),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (result.success) {
         setSubmitStatus('success');
         // Limpiar formulario
         const cleanData: FormData = {};
@@ -142,7 +161,7 @@ export function ContactForm({ className = '' }: ContactFormProps) {
         setFormData(cleanData);
         setErrors({});
       } else {
-        throw new Error('Error en la respuesta del servidor');
+        throw new Error(result.message || 'Error en la respuesta del servidor');
       }
     } catch (error) {
       console.error('Error al enviar formulario:', error);

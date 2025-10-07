@@ -48,6 +48,7 @@ Configure these secrets in your GitHub repository settings (Settings → Secrets
 | `AWS_REGION` | AWS region for S3 bucket | `us-east-1` |
 | `CF_DISTRIBUTION_ID` | CloudFront distribution ID | `E1234567890ABC` |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps API key | `AIzaSyB...` |
+| `NEXT_PUBLIC_WEB3FORMS_KEY` | Web3Forms access key | `abc123-def456-...` |
 
 ## AWS Setup
 

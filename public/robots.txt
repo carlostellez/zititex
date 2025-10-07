@@ -1,0 +1,17 @@
+# robots.txt for Zititex
+# https://www.zititex.com
+
+User-agent: *
+Allow: /
+Disallow: /_next/
+Disallow: /static/private/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap
+Sitemap: https://www.zititex.com/sitemap.xml
+

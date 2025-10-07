@@ -146,10 +146,16 @@ zititex/
    cp env.example .env.local
    ```
    
-   Edit `.env.local` and add your Google Maps API key:
+   Edit `.env.local` and add your API keys:
    ```env
-   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_google_maps_api_key
+   NEXT_PUBLIC_WEB3FORMS_KEY=your_actual_web3forms_access_key
    ```
+   
+   **Get your Web3Forms key** (free, no signup required):
+   - Visit: https://web3forms.com
+   - Enter your email address
+   - Copy the Access Key sent to your email
 
 4. **Run the development server**:
    ```bash
@@ -247,55 +253,55 @@ For detailed deployment instructions, see [AWS S3 Deployment Guide](./docs/aws-s
 
 ## 🔌 API Design
 
-### Contact Form API
+### Contact Form Integration
 
-**Endpoint**: `POST /api/contact`
+The contact form uses **Web3Forms**, a free third-party service that works perfectly with static sites.
 
-**Request Body**:
+**Integration Details**:
+- **Service**: Web3Forms (https://web3forms.com)
+- **Type**: Client-side form submission
+- **Cost**: Free (up to 250 submissions/month)
+- **Setup**: No server required, works with static export
+
+**How it works**:
+1. User fills out the contact form
+2. Form data is validated client-side
+3. Data is sent to Web3Forms API
+4. Web3Forms forwards the email to your configured email address
+5. User receives success/error message
+
+**Configuration**:
 ```typescript
-{
-  name: string;       // Required: Contact name
-  email: string;      // Required: Valid email address
-  phone?: string;     // Optional: Phone number
-  company?: string;   // Optional: Company name
-  message: string;    // Required: Message content
-}
-```
+// Form submits to Web3Forms API
+const submitData = {
+  access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+  subject: `New contact from Zititex - ${name}`,
+  from_name: name,
+  email: email,
+  message: message,
+  // ... other form fields
+};
 
-**Response**:
-```typescript
-// Success (200)
-{
-  success: true,
-  message: "Message sent successfully"
-}
-
-// Error (400/500)
-{
-  success: false,
-  error: "Error description"
-}
-```
-
-**Example Usage**:
-```typescript
-const response = await fetch('/api/contact', {
+await fetch('https://api.web3forms.com/submit', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    name: 'John Doe',
-    email: 'john@example.com',
-    phone: '+1234567890',
-    company: 'Example Corp',
-    message: 'Interested in your products'
-  })
+  body: JSON.stringify(submitData)
 });
-
-const data = await response.json();
-if (data.success) {
-  // Handle success
-}
 ```
+
+**Setup Instructions**:
+1. Visit https://web3forms.com
+2. Enter your email address where you want to receive form submissions
+3. Copy the Access Key
+4. Add to `.env.local`: `NEXT_PUBLIC_WEB3FORMS_KEY=your_access_key`
+5. Add to GitHub Secrets for deployment
+
+**Features**:
+- Spam protection with honeypot
+- Email notifications
+- Custom subject lines
+- No backend required
+- GDPR compliant
 
 ### Data Layer
 
@@ -313,6 +319,7 @@ Data is organized in the `src/data/` directory:
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Yes | Google Maps API key for map integration |
+| `NEXT_PUBLIC_WEB3FORMS_KEY` | Yes | Web3Forms access key for contact form |
 | `NODE_ENV` | No | Environment (development/production) |
 
 ### Next.js Configuration

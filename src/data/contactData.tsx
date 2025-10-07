@@ -204,8 +204,7 @@ export const contactData: ContactSection = {
         maxLength: 1000
       }
     }
-  ],
-  // apiEndpoint: "/api/contact"
+  ]
 };
 
 // Configuración del módulo de contacto
