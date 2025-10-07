@@ -49,7 +49,7 @@ export interface ContactSection {
   businessHours: BusinessHours[];
   location: LocationInfo;
   formFields: ContactFormField[];
-  apiEndpoint: string;
+  apiEndpoint?: string;
 }
 
 export const contactData: ContactSection = {
