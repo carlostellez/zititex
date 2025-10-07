@@ -205,7 +205,7 @@ export const contactData: ContactSection = {
       }
     }
   ],
-  apiEndpoint: "/api/contact"
+  // apiEndpoint: "/api/contact"
 };
 
 // Configuración del módulo de contacto
