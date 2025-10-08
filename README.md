@@ -233,8 +233,9 @@ Configure these in GitHub repository settings:
 - `AWS_ACCESS_KEY_ID`: AWS credentials
 - `AWS_SECRET_ACCESS_KEY`: AWS credentials
 - `AWS_REGION`: AWS region (e.g., `us-east-1`)
-- `CF_DISTRIBUTION_ID`: CloudFront distribution ID
+- `CF_DISTRIBUTION_ID`: CloudFront distribution ID (optional)
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API key
+- `NEXT_PUBLIC_WEB3FORMS_KEY`: Web3Forms access key
 
 ### Manual Deployment
 
@@ -249,7 +250,9 @@ aws s3 sync ./out s3://your-bucket-name --delete
 aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths "/*"
 ```
 
-For detailed deployment instructions, see [AWS S3 Deployment Guide](./docs/aws-s3-deployment.md).
+**Quick Start Options**:
+- [S3 Only Quick Start](./docs/s3-only-quick-start.md) - Get live in 10 minutes (HTTP only)
+- [Full AWS S3 + CloudFront Guide](./docs/aws-s3-deployment.md) - Complete production setup (HTTPS, CDN)
 
 ## 🔌 API Design
 

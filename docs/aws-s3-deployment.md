@@ -7,9 +7,24 @@ This document describes the deployment pipeline for the Zititex Next.js applicat
 ## Architecture
 
 The deployment uses:
-- **AWS S3**: Static website hosting
-- **AWS CloudFront**: CDN for global content delivery
+- **AWS S3**: Static website hosting (required)
+- **AWS CloudFront**: CDN for global content delivery (optional but recommended)
 - **GitHub Actions**: Automated CI/CD pipeline
+
+### Deployment Options
+
+**Option 1: S3 Only** (Simpler, but HTTP only)
+- Website hosted directly from S3
+- HTTP access only (no HTTPS without CloudFront)
+- Lower cost
+- Suitable for development/testing
+
+**Option 2: S3 + CloudFront** (Recommended for production)
+- S3 stores files, CloudFront delivers them
+- HTTPS support with SSL/TLS
+- Global CDN for faster loading worldwide
+- Custom domain support
+- Better security and performance
 
 ## Configuration
 
@@ -40,15 +55,17 @@ The deployment workflow (`.github/workflows/deploy-to-s3.yml`) triggers on push 
 
 Configure these secrets in your GitHub repository settings (Settings → Secrets and variables → Actions):
 
-| Secret Name | Description | Example |
-|-------------|-------------|---------|
-| `S3_BUCKET_NAME` | Name of your S3 bucket | `zititex-website` |
-| `AWS_ACCESS_KEY_ID` | AWS IAM user access key | `AKIAIOSFODNN7EXAMPLE` |
-| `AWS_SECRET_ACCESS_KEY` | AWS IAM user secret key | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
-| `AWS_REGION` | AWS region for S3 bucket | `us-east-1` |
-| `CF_DISTRIBUTION_ID` | CloudFront distribution ID | `E1234567890ABC` |
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps API key | `AIzaSyB...` |
-| `NEXT_PUBLIC_WEB3FORMS_KEY` | Web3Forms access key | `abc123-def456-...` |
+| Secret Name | Description | Required | Example |
+|-------------|-------------|----------|---------|
+| `S3_BUCKET_NAME` | Name of your S3 bucket | **Yes** | `zititex-website` |
+| `AWS_ACCESS_KEY_ID` | AWS IAM user access key | **Yes** | `AKIAIOSFODNN7EXAMPLE` |
+| `AWS_SECRET_ACCESS_KEY` | AWS IAM user secret key | **Yes** | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
+| `AWS_REGION` | AWS region for S3 bucket | **Yes** | `us-east-1` |
+| `CF_DISTRIBUTION_ID` | CloudFront distribution ID | No (Optional) | `E1234567890ABC` |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps API key | **Yes** | `AIzaSyB...` |
+| `NEXT_PUBLIC_WEB3FORMS_KEY` | Web3Forms access key | **Yes** | `abc123-def456-...` |
+
+**Note**: CloudFront is optional but recommended for better performance and HTTPS support. If not configured, the deployment will work with S3 alone.
 
 ## AWS Setup
 
@@ -189,6 +206,27 @@ aws cloudfront create-invalidation \
 ### Issue: S3 sync fails with permissions error
 
 **Solution**: Verify IAM user has correct permissions and credentials are valid.
+
+### Issue: CloudFront invalidation fails with "NoSuchDistribution"
+
+**Problem**: The CloudFront distribution ID doesn't exist or is incorrect.
+
+**Solutions**:
+
+1. **If you haven't set up CloudFront yet** (using S3 only):
+   - This is fine! Your site will work with S3 alone
+   - The workflow will skip the CloudFront invalidation step automatically
+   - No action needed
+
+2. **If you want to use CloudFront**:
+   - Verify the distribution ID is correct in AWS Console
+   - Go to CloudFront → Distributions
+   - Copy the correct Distribution ID (starts with "E")
+   - Update GitHub Secret `CF_DISTRIBUTION_ID` with correct value
+
+3. **If you want to remove CloudFront completely**:
+   - Delete the `CF_DISTRIBUTION_ID` secret from GitHub
+   - The workflow will automatically skip CloudFront steps
 
 ## Performance Optimization
 

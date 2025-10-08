@@ -194,10 +194,17 @@ export function ContactForm({ className = '' }: ContactFormProps) {
             name={field.name}
             value={fieldValue}
             onChange={(e) => handleFieldChange(field, e.target.value)}
+            onKeyDown={(e) => {
+              // Permitir espacio explícitamente
+              if (e.key === ' ') {
+                e.stopPropagation();
+              }
+            }}
             placeholder={field.placeholder}
             required={field.required}
             rows={5}
             className={`${baseInputClasses} resize-vertical`}
+            autoComplete="off"
           />
         );
 
@@ -228,9 +235,16 @@ export function ContactForm({ className = '' }: ContactFormProps) {
             name={field.name}
             value={fieldValue}
             onChange={(e) => handleFieldChange(field, e.target.value)}
+            onKeyDown={(e) => {
+              // Permitir espacio explícitamente
+              if (e.key === ' ') {
+                e.stopPropagation();
+              }
+            }}
             placeholder={field.placeholder}
             required={field.required}
             className={baseInputClasses}
+            autoComplete="off"
           />
         );
     }

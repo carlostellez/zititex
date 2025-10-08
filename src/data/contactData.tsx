@@ -79,7 +79,7 @@ export const contactData: ContactSection = {
       ),
       label: "WhatsApp Business",
       value: "+57 302 741 3967",
-      href: "https://wa.me/+573027413967",
+      href: "https://wa.me/573027413967",
       description: "Respuesta inmediata 24/7"
     },
     {
@@ -104,7 +104,7 @@ export const contactData: ContactSection = {
 
   location: {
     name: "Zititex - Planta de Producción",
-    address: "Cl 19 sur 12g 45",
+    address: "Cl 18 sur 12g 45",
     city: "Bogotá",
     country: "Colombia",
     postalCode: "110111",

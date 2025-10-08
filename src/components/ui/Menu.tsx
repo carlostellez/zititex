@@ -57,8 +57,11 @@ export function Menu({ items, className = '', isMobile = false, onItemClick }: M
     );
   }
 
+  // Detectar si se está usando el menú blanco (sobre hero)
+  const isWhiteMenu = className.includes('text-white');
+
   return (
-    <nav className={`flex items-center space-x-1 md:space-x-2 ${className}`}>
+    <nav className={`flex items-center space-x-1 md:space-x-2`}>
       {items.map((item) => (
         <button
           key={item.href}
@@ -68,7 +71,9 @@ export function Menu({ items, className = '', isMobile = false, onItemClick }: M
             responsive-text-sm font-medium
             ${activeItem === item.href 
               ? 'bg-blue-600 text-white' 
-              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              : isWhiteMenu
+                ? 'text-white/90 hover:text-white hover:bg-white/10'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
             }
           `}
         >

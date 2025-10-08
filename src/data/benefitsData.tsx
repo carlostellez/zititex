@@ -78,8 +78,8 @@ export const benefitsData: BenefitsSection = {
         </svg>
       ),
       title: "Escalabilidad para Cualquier Producción",
-      description: "Desde pequeños diseñadores independientes hasta grandes marcas nacionales. Manejamos desde 100 hasta 100,000 unidades con la misma calidad y atención.",
-      highlight: "Desde 100 unidades",
+      description: "Desde pequeños diseñadores independientes hasta grandes marcas nacionales. Manejamos desde 300 hasta 1'000.000 unidades con la misma calidad y atención.",
+      highlight: "Desde 300 unidades",
       features: [
         "Mínimos accesibles para emprendedores",
         "Capacidad para grandes volúmenes",

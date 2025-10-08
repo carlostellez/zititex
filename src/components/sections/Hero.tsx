@@ -57,25 +57,16 @@ export function Hero({ className = '' }: HeroProps) {
     }
   };
 
-  // Get overlay classes based on theme and slide overlay preference
+  // Get overlay classes - always dark overlay for better text contrast with white text
   const getOverlayClass = (overlay: string) => {
-    // Solo aplicar estilos del tema después de montar para evitar errores de hidratación
-    const isLightTheme = mounted && theme === 'light';
-    
     switch (overlay) {
       case 'light':
-        return isLightTheme 
-          ? 'bg-white/30 backdrop-blur-sm' 
-          : 'bg-white/15 backdrop-blur-sm';
+        return 'bg-black/25 backdrop-blur-sm';
       case 'dark':
-        return isLightTheme 
-          ? 'bg-black/20 backdrop-blur-sm' 
-          : 'bg-black/50 backdrop-blur-sm';
+        return 'bg-black/50 backdrop-blur-sm';
       case 'gradient':
       default:
-        return isLightTheme
-          ? 'bg-gradient-to-r from-white/40 via-white/20 to-transparent backdrop-blur-sm'
-          : 'bg-gradient-to-r from-black/60 via-black/30 to-transparent backdrop-blur-sm';
+        return 'bg-gradient-to-r from-black/60 via-black/40 to-black/20 backdrop-blur-sm';
     }
   };
 
@@ -129,11 +120,7 @@ export function Hero({ className = '' }: HeroProps) {
             {/* Subtitle */}
             {slide.subtitle && (
               <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <span className={`inline-block px-4 py-2 backdrop-blur-sm text-sm font-medium rounded-full border ${
-                  mounted && theme === 'light'
-                    ? 'bg-white/20 text-gray-800 border-white/30'
-                    : 'bg-white/10 text-white/90 border-white/20'
-                }`}>
+                <span className="inline-block px-4 py-2 backdrop-blur-sm text-sm font-medium rounded-full border bg-white/10 text-white/95 border-white/30">
                   {slide.subtitle}
                 </span>
               </div>
@@ -141,11 +128,7 @@ export function Hero({ className = '' }: HeroProps) {
 
             {/* Title */}
             <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <h1 className={`responsive-text-5xl font-bold mb-4 leading-tight ${
-                mounted && theme === 'light'
-                  ? 'text-gray-900 drop-shadow-sm'
-                  : 'text-white drop-shadow-lg'
-              }`}>
+              <h1 className="responsive-text-5xl font-bold mb-4 leading-tight text-white drop-shadow-lg">
                 {slide.title || heroFallback.title}
               </h1>
             </div>
@@ -153,11 +136,7 @@ export function Hero({ className = '' }: HeroProps) {
             {/* Description */}
             {slide.description && (
               <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                <p className={`responsive-text-xl max-w-2xl leading-relaxed ${
-                  mounted && theme === 'light'
-                    ? 'text-gray-700 drop-shadow-sm'
-                    : 'text-white/90 drop-shadow-md'
-                }`}>
+                <p className="responsive-text-xl max-w-2xl leading-relaxed text-white/95 drop-shadow-md">
                   {slide.description}
                 </p>
               </div>
@@ -169,11 +148,7 @@ export function Hero({ className = '' }: HeroProps) {
               {slide.buttonText && slide.buttonLink && (
                 <button
                   onClick={() => handleButtonClick(slide.buttonLink!)}
-                  className={`responsive-btn border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl backdrop-blur-sm ${
-                    mounted && theme === 'light'
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700'
-                  }`}
+                  className="responsive-btn border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl backdrop-blur-sm bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
                 >
                   {slide.buttonText}
                 </button>
@@ -183,11 +158,7 @@ export function Hero({ className = '' }: HeroProps) {
               {slide.secondaryButtonText && slide.secondaryButtonLink && (
                 <button
                   onClick={() => handleButtonClick(slide.secondaryButtonLink!)}
-                  className={`responsive-btn bg-transparent border-2 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm ${
-                    mounted && theme === 'light'
-                      ? 'text-gray-800 border-gray-800/50 hover:bg-gray-800/10 hover:border-gray-800/70'
-                      : 'text-white border-white/30 hover:bg-white/10 hover:border-white/50'
-                  }`}
+                  className="responsive-btn bg-transparent border-2 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm text-white border-white/40 hover:bg-white/15 hover:border-white/60"
                 >
                   {slide.secondaryButtonText}
                 </button>
@@ -197,15 +168,11 @@ export function Hero({ className = '' }: HeroProps) {
             {/* Scroll Indicator */}
             <div className="animate-fade-in-up absolute bottom-8 left-1/2 transform -translate-x-1/2" style={{ animationDelay: '1s' }}>
               <div className="flex flex-col items-center space-y-2">
-                <span className={`text-sm font-medium ${
-                  mounted && theme === 'light' ? 'text-gray-600' : 'text-white/70'
-                }`}>
+                <span className="text-sm font-medium text-white/80">
                   Descubre más
                 </span>
                 <div className="animate-bounce">
-                  <svg className={`w-6 h-6 ${
-                    mounted && theme === 'light' ? 'text-gray-600' : 'text-white/70'
-                  }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>
                 </div>

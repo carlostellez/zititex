@@ -95,8 +95,8 @@ export function Header({ className = '' }: HeaderProps) {
                 className={isScrolled ? '' : 'text-white'}
               />
               
-              {/* Theme Toggle */}
-              {mounted && (
+              {/* Theme Toggle - Only in development */}
+              {mounted && process.env.NODE_ENV === 'development' && (
                 <button
                   onClick={toggleTheme}
                   className={`
@@ -127,8 +127,8 @@ export function Header({ className = '' }: HeaderProps) {
 
             {/* Mobile Menu Button */}
             <div className="flex md:hidden items-center space-x-2">
-              {/* Mobile Theme Toggle */}
-              {mounted && (
+              {/* Mobile Theme Toggle - Only in development */}
+              {mounted && process.env.NODE_ENV === 'development' && (
                 <button
                   onClick={toggleTheme}
                   className={`
