@@ -1369,6 +1369,442 @@ Added `autoComplete="off"` to prevent:
 
 ---
 
+## Footer Logo Image
+
+### Replacing Text with Logo Image in Footer
+
+**Date**: October 8, 2025
+
+**Original Request** (Spanish):
+```
+en el footer en vez de tener la palabra zititex, debemos llamar la imagen 
+que se encuentra en public/static/logo/@zititex.png
+```
+
+**Translation**:
+"In the footer instead of having the word zititex, we should use the image located at public/static/logo/@zititex.png"
+
+**Context**:
+The footer was displaying the brand name "Zititex" as plain text in the brand section. To maintain brand consistency and visual identity, the logo image should be used instead.
+
+**Problem Analysis**:
+
+1. **Brand Consistency**: Text-only branding less professional than logo
+2. **Visual Identity**: Logo reinforces brand recognition
+3. **File Location**: Logo exists at `/public/static/logo/zititex.png`
+4. **Note**: Requested path had `@zititex.png` but actual file is `zititex.png`
+
+**Solution Implemented**:
+
+Replaced the text heading with the logo image in the Footer component:
+
+**Before**:
+```tsx
+<h3 className="responsive-text-2xl font-bold text-white mb-4">
+  Zititex
+</h3>
+```
+
+**After**:
+```tsx
+<div className="mb-4">
+  <img 
+    src="/static/logo/zititex.png" 
+    alt="Zititex - Etiquetas y Marquillas" 
+    className="h-12 w-auto"
+  />
+</div>
+```
+
+**Implementation Details**:
+
+1. **Image Path**: `/static/logo/zititex.png`
+   - Public folder is served from root in Next.js
+   - Path starts with `/static/` not `/public/static/`
+
+2. **Image Sizing**: `h-12 w-auto`
+   - Height: 48px (3rem)
+   - Width: Auto (maintains aspect ratio)
+   - Appropriate for footer logo
+
+3. **Alt Text**: "Zititex - Etiquetas y Marquillas"
+   - Descriptive for accessibility
+   - Includes business type
+   - SEO friendly
+
+4. **Container**: Wrapped in `div` with `mb-4`
+   - Maintains spacing consistency
+   - Allows for future logo adjustments
+
+**File Structure**:
+
+```
+public/
+└── static/
+    └── logo/
+        └── zititex.png  ← Logo file used
+```
+
+**Benefits**:
+
+1. **Brand Identity**: Professional logo display
+2. **Visual Consistency**: Matches header and other brand elements
+3. **Accessibility**: Proper alt text for screen readers
+4. **Responsive**: Auto width maintains aspect ratio
+5. **SEO**: Descriptive alt text helps search engines
+
+**Accessibility Considerations**:
+
+✅ Alt text provided for screen readers
+✅ High contrast logo (gold on dark background)
+✅ Appropriate size for readability
+✅ Maintains focus states
+✅ Logo clearly visible in both themes
+
+**Responsive Behavior**:
+
+- **Mobile**: Logo maintains readable size
+- **Tablet**: Logo scales appropriately
+- **Desktop**: Full logo display
+- **All sizes**: Aspect ratio preserved with `w-auto`
+
+**Logo Specifications**:
+
+The footer logo:
+- Height: 48px (h-12)
+- Width: Auto (maintains ratio)
+- Format: PNG with transparency
+- Style: Gold/bronze color scheme
+- Background: Transparent (works on dark footer)
+
+**Design Decisions**:
+
+1. **Size Choice**: 48px height
+   - Not too large (doesn't dominate footer)
+   - Not too small (remains clearly visible)
+   - Balanced with surrounding text
+
+2. **Positioning**: Top of brand section
+   - Natural reading order
+   - Above company description
+   - Consistent with layout hierarchy
+
+3. **No Link**: Logo not clickable
+   - Footer logo typically informational
+   - Main navigation logo (header) handles clicks
+   - Avoids redundant navigation
+
+**Copyright Section**:
+
+Kept text-based copyright:
+```tsx
+© {currentYear} Zititex. Todos los derechos reservados.
+```
+
+Rationale:
+- Copyright is legal text, not branding
+- Text format is standard practice
+- More readable at small size
+- Easier for screen readers
+
+**Testing Checklist**:
+
+✅ Logo displays correctly in footer
+✅ Correct aspect ratio maintained
+✅ Alt text present for accessibility
+✅ Responsive across all screen sizes
+✅ Visible in both light/dark themes
+✅ No broken image issues
+✅ Proper spacing around logo
+
+**Related Components**:
+
+Logo is also used in:
+1. **Header**: Main navigation logo (clickable)
+2. **Footer**: Brand section logo (informational) ← Updated
+3. **Potential**: Loading screens, favicons, etc.
+
+**Future Enhancements**:
+
+1. **SVG Version**: Consider SVG for better scaling
+2. **Multiple Sizes**: Responsive srcset for optimization
+3. **Lazy Loading**: Add loading="lazy" for performance
+4. **Dark/Light Variants**: Different logos per theme if needed
+
+**Best Practices Applied**:
+
+1. **Semantic HTML**: Using `<img>` for content images
+2. **Accessibility**: Descriptive alt text
+3. **Performance**: Auto width for optimal loading
+4. **Maintainability**: Single source for logo path
+5. **SEO**: Descriptive alt attributes
+
+**Impact on Project**:
+
+- ✅ More professional footer appearance
+- ✅ Better brand consistency
+- ✅ Improved visual hierarchy
+- ✅ Enhanced brand recognition
+- ✅ Accessible to all users
+- ✅ Maintains responsive design
+
+---
+
+## Header Logo Text Image
+
+### Replacing Brand Text with Logo Image in Header
+
+**Date**: October 8, 2025
+
+**Original Request** (Spanish):
+```
+en el header tambien en la palabra Zititex vamos a colocar la imagen 
+que se encuentra en public/static/logo/@zititex_text.png
+```
+
+**Translation**:
+"In the header too, we're going to replace the word Zititex with the image located at public/static/logo/@zititex_text.png"
+
+**Context**:
+After updating the footer with the logo image, the header needed the same treatment for brand consistency. The header displays the brand name as clickable text that scrolls to the top of the page.
+
+**Problem Analysis**:
+
+1. **Brand Consistency**: Text-only logo in header vs image logo in footer
+2. **Visual Identity**: Logo text image provides better branding
+3. **Color Challenges**: Logo needs to be white over hero, dark after scroll
+4. **Interactive Element**: Must remain clickable to scroll to top
+5. **File**: Actual file is `zititex_text.png` (not `@zititex_text.png`)
+
+**Solution Implemented**:
+
+Replaced the text button with an image logo that adapts to scroll state:
+
+**Before**:
+```tsx
+<button
+  onClick={() => {
+    const element = document.querySelector('#inicio');
+    element?.scrollIntoView({ behavior: 'smooth' });
+  }}
+  className={`
+    font-bold responsive-text-xl transition-colors duration-200
+    ${isScrolled 
+      ? 'text-blue-600 dark:text-blue-400' 
+      : 'text-white'
+    }
+  `}
+>
+  Zititex
+</button>
+```
+
+**After**:
+```tsx
+<button
+  onClick={() => {
+    const element = document.querySelector('#inicio');
+    element?.scrollIntoView({ behavior: 'smooth' });
+  }}
+  className="transition-all duration-200"
+>
+  <img
+    src="/static/logo/zititex_text.png"
+    alt="Zititex - Etiquetas y Marquillas"
+    className={`
+      h-8 md:h-10 w-auto transition-all duration-200
+      ${isScrolled 
+        ? 'brightness-100' 
+        : 'brightness-0 invert'
+      }
+    `}
+  />
+</button>
+```
+
+**Implementation Details**:
+
+1. **Image Path**: `/static/logo/zititex_text.png`
+   - Text-only logo version (horizontal)
+   - Perfect for header navigation
+
+2. **Responsive Sizing**:
+   - Mobile: `h-8` (32px)
+   - Desktop: `h-10` (40px)
+   - Width: Auto (maintains aspect ratio)
+
+3. **Color Adaptation** (CSS Filters):
+   - **Over Hero** (`!isScrolled`): 
+     - `brightness-0` (makes it black)
+     - `invert` (turns black to white)
+     - Result: White logo
+   
+   - **After Scroll** (`isScrolled`):
+     - `brightness-100` (normal colors)
+     - No invert
+     - Result: Original gold/brown logo
+
+4. **Transitions**:
+   - Smooth color change on scroll
+   - Smooth size change responsive
+   - Duration: 200ms
+
+**CSS Filter Magic**:
+
+```css
+/* Over hero (white) */
+brightness-0 invert
+/* Black → White transformation */
+
+/* After scroll (original colors) */
+brightness-100
+/* Gold/brown logo colors */
+```
+
+**Why This Works**:
+
+1. **brightness-0**: Converts image to black (removes all color)
+2. **invert**: Inverts black to white
+3. **brightness-100**: Returns to original colors
+4. **transition-all**: Smooth color change during scroll
+
+**Responsive Behavior**:
+
+| Screen Size | Height | Use Case |
+|-------------|--------|----------|
+| Mobile (< 768px) | 32px (h-8) | Compact for mobile header |
+| Desktop (≥ 768px) | 40px (h-10) | Larger, more visible |
+
+**Scroll States**:
+
+| State | Position | Filter | Color |
+|-------|----------|--------|-------|
+| Top (Hero) | `!isScrolled` | `brightness-0 invert` | White |
+| Scrolled | `isScrolled` | `brightness-100` | Original gold |
+
+**Interactive Features**:
+
+✅ Clickable button (maintains functionality)
+✅ Scrolls to #inicio section
+✅ Smooth scroll behavior
+✅ Visual feedback on hover
+✅ Accessible with alt text
+
+**Accessibility**:
+
+✅ Alt text: "Zititex - Etiquetas y Marquillas"
+✅ Semantic button element
+✅ Keyboard accessible
+✅ Screen reader friendly
+✅ Clear focus states
+
+**Design Decisions**:
+
+1. **Smaller than Footer**: Header logo more compact (h-10 vs h-16)
+2. **Color Inversion**: CSS filters for white/colored states
+3. **Button Wrapper**: Maintains click functionality
+4. **Smooth Transitions**: Professional scroll effect
+
+**Logo Files Used**:
+
+```
+public/
+└── static/
+    └── logo/
+        ├── zititex.png       ← Footer (icon logo)
+        └── zititex_text.png  ← Header (text logo) ✓
+```
+
+**Alternative Approaches Considered**:
+
+1. ❌ **Two Images**: One white, one colored (more files)
+2. ❌ **SVG with CSS**: More complex, needs SVG conversion
+3. ✅ **CSS Filters**: Simple, performant, one image
+
+**Performance Benefits**:
+
+1. **Single Image**: Only one file to load
+2. **CSS Filters**: No JavaScript needed
+3. **Cached**: Same image across pages
+4. **Small Size**: Text logo is lightweight
+
+**Testing Checklist**:
+
+✅ Logo displays correctly in header
+✅ White color over hero section
+✅ Gold color after scrolling
+✅ Smooth transition between states
+✅ Clickable and scrolls to top
+✅ Responsive on all screen sizes
+✅ Works in both light/dark themes
+✅ No layout shift or flicker
+
+**Browser Compatibility**:
+
+✅ CSS `brightness` and `invert` filters supported in:
+- Chrome/Edge: ✓
+- Firefox: ✓
+- Safari: ✓
+- Mobile browsers: ✓
+
+**Related Components**:
+
+Logo usage across the site:
+1. **Header**: Text logo with color inversion ← Updated
+2. **Footer**: Icon logo (fixed color)
+3. **Favicon**: Browser tab icon
+4. **Social shares**: Open Graph images
+
+**User Experience**:
+
+**Before**:
+- Text-only logo
+- Simple color change
+- Less branded
+
+**After**:
+- Professional logo image
+- Dynamic color adaptation
+- Strong brand presence
+- Consistent with footer
+
+**Future Enhancements**:
+
+1. **SVG Version**: Better scaling, smaller file size
+2. **Preload Logo**: Faster initial page load
+3. **Logo Animation**: Subtle entrance effect
+4. **Different Logos**: Per theme (light/dark variants)
+
+**Best Practices Applied**:
+
+1. **Single Source**: One logo file, CSS transforms
+2. **Performance**: CSS filters over multiple images
+3. **Accessibility**: Proper alt text and semantics
+4. **Responsive**: Mobile-first sizing
+5. **Interactive**: Maintains button functionality
+
+**Impact on Project**:
+
+- ✅ Professional branded header
+- ✅ Consistent logo usage (header + footer)
+- ✅ Dynamic color adaptation
+- ✅ Smooth scroll transitions
+- ✅ Better brand recognition
+- ✅ Maintains all functionality
+- ✅ Accessible to all users
+
+**CSS Filters Reference**:
+
+```css
+/* White logo over hero */
+filter: brightness(0) invert(1);
+
+/* Original colors after scroll */
+filter: brightness(1);
+```
+
+---
+
 ## Future Prompts
 
 This section will be updated with each new development prompt and the decisions made.

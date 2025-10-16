@@ -76,15 +76,19 @@ export function Header({ className = '' }: HeaderProps) {
                   const element = document.querySelector('#inicio');
                   element?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className={`
-                  font-bold responsive-text-xl transition-colors duration-200
-                  ${isScrolled 
-                    ? 'text-blue-600 dark:text-blue-400' 
-                    : 'text-white'
-                  }
-                `}
+                className="transition-all duration-200"
               >
-                Zititex
+                <img
+                  src="/static/logo/zititex_text.png"
+                  alt="Zititex - Etiquetas y Marquillas"
+                  className={`
+                    h-6 md:h-8 w-auto transition-all duration-200
+                    ${isScrolled 
+                      ? 'brightness-100' 
+                      : 'brightness-0 invert'
+                    }
+                  `}
+                />
               </button>
             </div>
 

@@ -133,7 +133,15 @@ export function Footer({ className = '' }: FooterProps) {
             {/* Brand Section */}
             <div className="lg:col-span-2">
               <div className="mb-6">
-                <h3 className="responsive-text-2xl font-bold text-white mb-4">Zititex</h3>
+                <div className="mb-4">
+                  <img 
+                    src="/static/logo/zititex.png" 
+                    alt="Zititex - Etiquetas y Marquillas" 
+                    className="h-12 md:h-24 w-auto"
+                    onClick={() => handleLinkClick('/#inicio', false)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </div>
                 <p className="responsive-text-base text-gray-400 dark:text-gray-300 mb-6 leading-relaxed max-w-md">
                   Especialistas en etiquetas y marquillas de calidad premium para la industria textil. 
                   Soluciones personalizadas que reflejan la excelencia de tu marca.
