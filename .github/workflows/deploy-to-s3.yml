@@ -49,10 +49,10 @@ jobs:
         AWS_REGION: ${{ secrets.AWS_REGION }}
 
     - name: Invalidate CloudFront cache
-      if: ${{ secrets.CF_DISTRIBUTION_ID != '' && env.NODE_ENV == 'production' }}
+      if: ${{ github.ref == 'refs/heads/master' }}
       run: |
-        echo "Invalidating CloudFront distribution: ${{ secrets.CF_DISTRIBUTION_ID }}"
         if [ -n "${{ secrets.CF_DISTRIBUTION_ID }}" ]; then
+          echo "Invalidating CloudFront distribution: ${{ secrets.CF_DISTRIBUTION_ID }}"
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} \
             --paths "/*"
@@ -60,5 +60,7 @@ jobs:
           echo "CloudFront distribution ID not configured. Skipping cache invalidation."
         fi
       env:
-        NODE_ENV: ${{ env.NODE_ENV }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
 
