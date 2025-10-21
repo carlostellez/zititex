@@ -1,588 +1,986 @@
 # How to Run Zititex Project
 
-This document provides detailed instructions for running the Zititex application in different environments.
+This document provides detailed instructions on how to set up, run, test, and deploy the Zititex website.
 
 ## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Initial Setup](#initial-setup)
+- [Development](#development)
+- [Testing](#testing)
+- [Building](#building)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
 
-1. [Prerequisites](#prerequisites)
-2. [Initial Setup](#initial-setup)
-3. [Development Environment](#development-environment)
-4. [Production Build](#production-build)
-5. [Testing the Build Locally](#testing-the-build-locally)
-6. [Deployment](#deployment)
-7. [Troubleshooting](#troubleshooting)
+---
 
 ## Prerequisites
 
-Before running the project, ensure you have the following installed on your system:
-
 ### Required Software
 
-1. **Node.js** (version 20.x or higher)
-   - Download from: https://nodejs.org/
-   - Verify installation:
-     ```bash
-     node --version  # Should output v20.x.x or higher
-     ```
+1. **Node.js** (v18.0 or higher)
+   ```bash
+   node --version  # Should be v18.0+
+   ```
+   Download from: https://nodejs.org/
 
-2. **npm** (version 10.x or higher)
-   - Comes with Node.js
-   - Verify installation:
-     ```bash
-     npm --version  # Should output 10.x.x or higher
-     ```
+2. **npm** (v9.0 or higher) - Included with Node.js
+   ```bash
+   npm --version  # Should be v9.0+
+   ```
 
-3. **Git** (for cloning the repository)
-   - Download from: https://git-scm.com/
-   - Verify installation:
-     ```bash
-     git --version
-     ```
+3. **Git** (optional, for version control)
+   ```bash
+   git --version
+   ```
+   Download from: https://git-scm.com/
 
-### Optional Software
+### Recommended Tools
 
-4. **AWS CLI** (for manual deployments)
-   - Installation: https://aws.amazon.com/cli/
-   - Verify installation:
-     ```bash
-     aws --version
-     ```
+- **VS Code**: Recommended IDE
+  - Install from: https://code.visualstudio.com/
+  - Recommended extensions:
+    - ESLint
+    - Prettier
+    - Tailwind CSS IntelliSense
+    - TypeScript and JavaScript Language Features
+
+- **Browser**: Modern browser with DevTools
+  - Chrome (recommended)
+  - Firefox
+  - Safari
+  - Edge
+
+---
 
 ## Initial Setup
 
-### Step 1: Clone the Repository
+### 1. Clone or Download the Project
 
+**Option A: Using Git**
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/zititex.git
-
-# Navigate to project directory
+git clone <repository-url>
 cd zititex
 ```
 
-### Step 2: Install Dependencies
+**Option B: Download ZIP**
+1. Download the project ZIP file
+2. Extract to your desired location
+3. Open terminal in the project directory
+
+### 2. Install Dependencies
 
 ```bash
-# Install all project dependencies
 npm install
 ```
 
-This command will:
-- Read `package.json`
-- Download all required packages to `node_modules/`
-- Create/update `package-lock.json`
-- Take approximately 1-2 minutes
+This will install all required packages listed in `package.json`:
+- Next.js
+- React
+- Tailwind CSS
+- TypeScript
+- And other dependencies
 
-### Step 3: Configure Environment Variables
+**Expected Output**:
+```
+added XXX packages in XXs
+```
 
-1. **Copy the example environment file**:
-   ```bash
-   cp env.example .env.local
-   ```
+### 3. Configure Environment Variables
 
-2. **Edit `.env.local` with your values**:
-   ```bash
-   # Use your preferred editor (nano, vim, code, etc.)
-   nano .env.local
-   ```
-
-3. **Required variables**:
-   ```env
-   # Google Maps API Key (Required)
-   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_google_maps_api_key
-
-   # Web3Forms Access Key (Required for contact form)
-   NEXT_PUBLIC_WEB3FORMS_KEY=your_actual_web3forms_access_key
-
-   # Environment
-   NODE_ENV=development
-   ```
-
-4. **Obtaining API Keys**:
-
-   **Google Maps API Key**:
-   - Visit: https://console.cloud.google.com/apis/credentials
-   - Create a new project or select existing
-   - Enable "Maps JavaScript API"
-   - Create credentials (API Key)
-   - Copy the API key and paste it in `.env.local`
-
-   **Web3Forms Access Key** (free, no credit card required):
-   - Visit: https://web3forms.com
-   - Enter your email address where you want to receive form submissions
-   - Check your email and copy the Access Key
-   - Paste it in `.env.local`
-   - No signup or account creation required!
-
-## Development Environment
-
-### Running the Development Server
+Create a `.env.local` file in the root directory:
 
 ```bash
-# Start development server
-npm run dev
+cp env.example .env.local
 ```
 
-**What happens**:
-- Next.js development server starts on port 3000
-- Turbopack is used for fast hot module replacement (HMR)
-- TypeScript type checking runs in background
-- Changes to files automatically reload the browser
-
-**Access the application**:
-- Open your browser and navigate to: http://localhost:3000
-
-**Features available in development mode**:
-- Hot reload (instant updates on file save)
-- Detailed error messages
-- React Developer Tools support
-- Source maps for debugging
-
-### Development Commands
+Edit `.env.local` and configure your values:
 
 ```bash
-# Start development server (default)
-npm run dev
+# Backend API Configuration (REQUIRED for contact form)
+NEXT_PUBLIC_API_BASE_URL=https://your-api-url.com/api/v1
+NEXT_PUBLIC_API_KEY=your_api_key_here
 
-# Run ESLint to check code quality
-npm run lint
+# Google Maps API Key (OPTIONAL)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
 
-# Fix auto-fixable linting issues
-npm run lint -- --fix
+# Web3Forms API Key (DEPRECATED - kept as fallback)
+NEXT_PUBLIC_WEB3FORMS_KEY=your_web3forms_access_key_here
+
+# Environment
+NODE_ENV=development
 ```
 
-### Development Workflow
+**Important Notes**:
+- Never commit `.env.local` to version control
+- Use different API keys for development and production
+- The contact form requires `NEXT_PUBLIC_API_BASE_URL` and `NEXT_PUBLIC_API_KEY`
 
-1. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
+### 4. Verify Setup
 
-2. **Make changes to files** in:
-   - `src/components/` - React components
-   - `src/app/` - Pages and routes
-   - `src/data/` - Data files
-   - `public/static/` - Static assets
-
-3. **View changes** in the browser (http://localhost:3000)
-   - Changes appear automatically
-   - Check browser console for errors
-
-4. **Check for linting errors**:
-   ```bash
-   npm run lint
-   ```
-
-5. **Stop the server**:
-   - Press `Ctrl + C` in the terminal
-
-## Production Build
-
-### Building for Production
+Check that everything is configured correctly:
 
 ```bash
-# Create production build
-npm run build
-```
+# Check Node.js version
+node --version
 
-**What happens**:
-1. Next.js compiles TypeScript to JavaScript
-2. Optimizes all code for production
-3. Generates static HTML, CSS, and JS files
-4. Creates the `out/` directory with all static files
-5. Build process takes approximately 1-2 minutes
+# Check npm version
+npm --version
 
-**Output**:
-```
-zititex/
-└── out/                    # Generated static files
-    ├── index.html         # Home page
-    ├── _next/             # Next.js optimized assets
-    │   ├── static/        # Static JS and CSS bundles
-    │   └── ...
-    ├── static/            # Your static assets (copied)
-    └── ...
-```
+# Check that node_modules was created
+ls node_modules
 
-### Build Output Details
-
-The `out/` directory contains:
-- **HTML files**: Pre-rendered pages
-- **JavaScript bundles**: Optimized and minified
-- **CSS files**: Purged and minified
-- **Static assets**: Images, fonts, etc.
-- **Manifest**: PWA manifest.json
-
-### Build Verification
-
-After building, verify the output:
-
-```bash
-# Check build directory exists
-ls -la out/
-
-# Check build size
-du -sh out/
-
-# List all generated HTML files
-find out -name "*.html"
-```
-
-## Testing the Build Locally
-
-### Option 1: Using Python (Easiest)
-
-```bash
-# Navigate to build directory
-cd out
-
-# Start a simple HTTP server (Python 3)
-python3 -m http.server 8000
-
-# Or using Python 2
-python -m SimpleHTTPServer 8000
-```
-
-Access at: http://localhost:8000
-
-### Option 2: Using npx serve
-
-```bash
-# Install and run serve (from project root)
-npx serve out -p 8000
-```
-
-Access at: http://localhost:8000
-
-### Option 3: Using Node.js http-server
-
-```bash
-# Install globally
-npm install -g http-server
-
-# Serve the build
-http-server out -p 8000
-```
-
-Access at: http://localhost:8000
-
-### Testing Checklist
-
-After serving the build locally, test:
-
-- [ ] Home page loads correctly
-- [ ] All images display properly
-- [ ] Navigation menu works
-- [ ] Contact form submits successfully
-- [ ] Google Maps loads and displays location
-- [ ] WhatsApp button functions
-- [ ] All product images load
-- [ ] Page is responsive on different screen sizes
-- [ ] No console errors in browser developer tools
-
-## Deployment
-
-### Automatic Deployment (Recommended)
-
-The project uses GitHub Actions for automatic deployment to AWS S3.
-
-**How it works**:
-
-1. **Push to master branch**:
-   ```bash
-   git add .
-   git commit -m "Your commit message"
-   git push origin master
-   ```
-
-2. **GitHub Actions workflow triggers automatically**:
-   - Workflow file: `.github/workflows/deploy-to-s3.yml`
-   - Build process runs
-   - Files sync to S3
-   - CloudFront cache invalidates
-
-3. **Monitor deployment**:
-   - Go to GitHub repository
-   - Click "Actions" tab
-   - View workflow progress
-   - Deployment takes ~2-3 minutes
-
-**Prerequisites**:
-- GitHub repository secrets configured (see README.md)
-- AWS S3 bucket created
-- CloudFront distribution configured
-
-### Manual Deployment
-
-If you need to deploy manually:
-
-#### Step 1: Build the project
-
-```bash
-npm run build
-```
-
-#### Step 2: Configure AWS CLI
-
-```bash
-# Configure AWS credentials
-aws configure
-# Enter:
-# - AWS Access Key ID
-# - AWS Secret Access Key
-# - Default region (e.g., us-east-1)
-# - Default output format (json)
-```
-
-#### Step 3: Sync to S3
-
-```bash
-# Sync build to S3 bucket
-aws s3 sync ./out s3://your-bucket-name \
-  --delete \
-  --cache-control "public,max-age=31536000,immutable" \
-  --exclude "*.html" \
-  --exclude "manifest.json"
-
-# Sync HTML files with different cache headers
-aws s3 sync ./out s3://your-bucket-name \
-  --delete \
-  --cache-control "public,max-age=0,must-revalidate" \
-  --exclude "*" \
-  --include "*.html" \
-  --include "manifest.json" \
-  --content-type "text/html; charset=utf-8"
-```
-
-#### Step 4: Invalidate CloudFront Cache
-
-```bash
-# Create CloudFront invalidation
-aws cloudfront create-invalidation \
-  --distribution-id YOUR_DISTRIBUTION_ID \
-  --paths "/*"
-```
-
-**Verify deployment**:
-- Visit your CloudFront URL or custom domain
-- Check that changes are live
-- Test all functionality
-
-## Troubleshooting
-
-### Common Issues and Solutions
-
-#### Issue 1: Port 3000 Already in Use
-
-**Error**:
-```
-Error: listen EADDRINUSE: address already in use :::3000
-```
-
-**Solution**:
-```bash
-# Find process using port 3000
-lsof -ti:3000
-
-# Kill the process
-kill -9 $(lsof -ti:3000)
-
-# Or run on a different port
-npm run dev -- -p 3001
-```
-
-#### Issue 2: Module Not Found Errors
-
-**Error**:
-```
-Module not found: Can't resolve 'module-name'
-```
-
-**Solution**:
-```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# Clear Next.js cache
-rm -rf .next
-npm run dev
-```
-
-#### Issue 3: Google Maps Not Loading
-
-**Error**:
-Map doesn't display or shows error message
-
-**Solution**:
-```bash
-# 1. Check if API key is set
-cat .env.local | grep GOOGLE_MAPS
-
-# 2. Verify the key is valid in Google Cloud Console
-
-# 3. Ensure Maps JavaScript API is enabled
-
-# 4. Restart development server
-npm run dev
-```
-
-#### Issue 6: Contact Form Not Working
-
-**Error**:
-Form shows error message when submitting
-
-**Solution**:
-```bash
-# 1. Check if Web3Forms key is set
-cat .env.local | grep WEB3FORMS
-
-# 2. Verify the key is valid
-# Visit https://web3forms.com and check your email for the key
-
-# 3. Restart development server
-npm run dev
-
-# 4. Test form submission
-# Check browser console for any errors
-```
-
-#### Issue 4: Build Fails
-
-**Error**:
-```
-Error: Build failed
-```
-
-**Solution**:
-```bash
-# 1. Check for TypeScript errors
-npm run lint
-
-# 2. Clear cache and rebuild
-rm -rf .next out
-npm run build
-
-# 3. Check Node.js version
-node --version  # Should be 20.x or higher
-
-# 4. Update dependencies
-npm update
-```
-
-#### Issue 5: Images Not Loading
-
-**Error**:
-Images show broken icon or 404 error
-
-**Solution**:
-1. **Check image path** (must use `/static/` prefix):
-   ```tsx
-   // Correct
-   <img src="/static/products/image.jpg" />
-   
-   // Incorrect
-   <img src="/products/image.jpg" />
-   ```
-
-2. **Verify image exists** in `public/static/` directory
-
-3. **Check file name** (case-sensitive on Linux/S3)
-
-#### Issue 6: Environment Variables Not Working
-
-**Error**:
-Environment variables are undefined
-
-**Solution**:
-1. **Restart development server** after changing `.env.local`
-2. **Use correct prefix** for client-side variables:
-   ```env
-   # Correct (accessible in browser)
-   NEXT_PUBLIC_API_KEY=abc123
-   
-   # Incorrect (only available server-side)
-   API_KEY=abc123
-   ```
-
-### Getting Help
-
-If you encounter issues not covered here:
-
-1. **Check documentation**:
-   - README.md
-   - docs/aws-s3-deployment.md
-   - docs/contact-module-guide.md
-
-2. **Search existing issues** on GitHub repository
-
-3. **Create a new issue** with:
-   - Error message
-   - Steps to reproduce
-   - Your environment (OS, Node version, etc.)
-
-4. **Contact development team**
-
-## Performance Tips
-
-### Optimizing Development Experience
-
-```bash
-# Use faster package manager (optional)
-npm install -g pnpm
-pnpm install
-pnpm dev
-
-# Enable caching for faster rebuilds
-export NEXT_TELEMETRY_DISABLED=1
-```
-
-### Monitoring Build Performance
-
-```bash
-# Analyze bundle size
-npm run build
-
-# The build output shows:
-# - Route sizes
-# - First load JS shared by all
-# - Individual page sizes
-```
-
-## Maintenance
-
-### Updating Dependencies
-
-```bash
-# Check for outdated packages
-npm outdated
-
-# Update all packages to latest versions
-npm update
-
-# Update specific package
-npm update package-name
-
-# Update Next.js specifically
-npm install next@latest react@latest react-dom@latest
-```
-
-### Cleaning Up
-
-```bash
-# Remove build artifacts
-rm -rf .next out
-
-# Remove dependencies
-rm -rf node_modules
-
-# Full clean install
-rm -rf node_modules package-lock.json .next out
-npm install
+# Verify environment file
+cat .env.local
 ```
 
 ---
 
-**Last Updated**: October 2025
-**Maintained By**: Zititex Development Team
+## Development
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+**Expected Output**:
+```
+  ▲ Next.js 14.x.x
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Ready in X.Xs
+```
+
+### Access the Application
+
+1. Open your browser
+2. Navigate to: `http://localhost:3000`
+3. You should see the Zititex homepage
+
+### Development Features
+
+#### Hot Reload
+- Save any file
+- Browser automatically refreshes
+- Changes appear instantly
+
+#### Available Routes
+- `/` - Home page (Hero, Products, Benefits, Contact)
+- `/#productos` - Products section
+- `/#beneficios` - Benefits section
+- `/#contacto` - Contact section
+
+#### Component Structure
+```
+src/
+├── app/
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   └── globals.css        # Global styles
+├── components/
+│   ├── layout/            # Header, Footer
+│   ├── sections/          # Hero, Products, Benefits, Contact
+│   ├── ui/                # Reusable UI components
+│   └── seo/               # SEO components
+├── config/                # API configuration
+├── contexts/              # React contexts (Theme)
+├── data/                  # Static data
+└── types/                 # TypeScript types
+```
+
+### Development Commands
+
+```bash
+# Start development server
+npm run dev
+
+# Run linting
+npm run lint
+
+# Check TypeScript types
+npm run type-check  # (if configured)
+
+# Format code (if Prettier is configured)
+npm run format
+```
+
+### Making Changes
+
+#### 1. Modifying Content
+
+**Product Data** (`src/data/productsData.tsx`):
+```typescript
+export const productsData = {
+  products: [
+    {
+      id: "etiquetas",
+      name: "Product Name",
+      description: "Description",
+      // ... update content
+    }
+  ]
+};
+```
+
+**Contact Information** (`src/data/contactData.tsx`):
+```typescript
+export const contactData = {
+  contactInfo: [
+    {
+      label: "Phone",
+      value: "+57 xxx xxx xxxx",
+      // ... update info
+    }
+  ]
+};
+```
+
+#### 2. Styling Changes
+
+**Tailwind CSS**: Utility classes in components
+```tsx
+<div className="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg">
+  Content
+</div>
+```
+
+**Global Styles** (`src/app/globals.css`):
+```css
+.custom-class {
+  /* Custom styles */
+}
+```
+
+#### 3. Adding New Components
+
+```bash
+# Create new component
+touch src/components/ui/NewComponent.tsx
+```
+
+```typescript
+// src/components/ui/NewComponent.tsx
+'use client';
+
+import { useState } from 'react';
+
+export function NewComponent() {
+  return (
+    <div>
+      {/* Component content */}
+    </div>
+  );
+}
+```
+
+#### 4. Testing Changes
+
+1. Save your changes
+2. Check browser for visual changes
+3. Open DevTools Console (F12) for errors
+4. Test on different screen sizes
+5. Test dark/light mode toggle
+
+---
+
+## Testing
+
+### 1. Test Contact Form API
+
+Before testing the form in the browser, verify API connectivity:
+
+```bash
+node scripts/test-contact-api.js
+```
+
+**Expected Output (Success)**:
+```
+🧪 Iniciando prueba del API de contacto
+================================================
+
+📋 Configuración:
+   Base URL: https://api.example.com/api/v1
+   API Key: abcd1234...
+
+📤 Datos de prueba:
+{
+  "full_name": "Test Usuario",
+  "email": "test@example.com",
+  ...
+}
+
+🌐 Enviando petición a: https://api.example.com/api/v1/contact/
+
+📡 Respuesta del servidor:
+   Status: 200 OK
+
+✅ ¡Prueba exitosa!
+
+📥 Datos de respuesta:
+{
+  "success": true,
+  ...
+}
+
+================================================
+✅ El API de contacto está funcionando correctamente
+================================================
+```
+
+**Expected Output (Error)**:
+```
+❌ Error: Variables de entorno no configuradas
+
+Por favor configura las siguientes variables:
+  - NEXT_PUBLIC_API_BASE_URL: URL base del API
+  - NEXT_PUBLIC_API_KEY: API key para autenticación
+```
+
+### 2. Manual Browser Testing
+
+#### Test Contact Form
+
+1. Start dev server: `npm run dev`
+2. Navigate to: `http://localhost:3000#contacto`
+3. Fill out the form:
+   - **Nombre Completo**: Test User
+   - **Empresa**: Test Company (optional)
+   - **Correo Electrónico**: test@example.com
+   - **Teléfono**: +57 300 123 4567
+   - **Tipo de Producto**: Select any option
+   - **Cantidad Aproximada**: Select any option (optional)
+   - **Mensaje**: Enter test message (min 10 chars)
+4. Click "Enviar Mensaje"
+5. Check results:
+   - ✅ Loading spinner appears
+   - ✅ Success message appears (green)
+   - ✅ Form fields are cleared
+   - ✅ No errors in console
+
+#### Test Form Validation
+
+1. Try submitting empty form
+   - ✅ Required field errors appear
+2. Enter invalid email
+   - ✅ Email validation error appears
+3. Enter short message (< 10 chars)
+   - ✅ Minimum length error appears
+4. Fill all fields correctly
+   - ✅ Form submits successfully
+
+#### Test Console Logs
+
+Open DevTools Console (F12) and check for:
+
+```javascript
+// When submitting form
+📤 Enviando formulario de contacto: {...}
+
+// API layer (from api.ts)
+🌐 API Request: { url, method, headers, body }
+📡 API Response: { status, ok, ... }
+
+// Success
+✅ API Success Response: {...}
+✅ Formulario enviado exitosamente
+
+// Or errors
+❌ API Error Response: {...}
+❌ Error al enviar formulario: Error message
+```
+
+### 3. Test Responsive Design
+
+Test on different screen sizes:
+
+```bash
+# In browser DevTools (F12)
+# Toggle device toolbar (Ctrl+Shift+M)
+# Test these breakpoints:
+```
+
+- **Mobile**: 375px (iPhone SE)
+- **Tablet**: 768px (iPad)
+- **Desktop**: 1280px (Laptop)
+- **Large Desktop**: 1920px (Desktop)
+
+Check:
+- ✅ Layout adapts correctly
+- ✅ Navigation menu works (mobile hamburger)
+- ✅ Images load properly
+- ✅ Text is readable
+- ✅ Buttons are clickable
+- ✅ Form is usable
+
+### 4. Test Dark/Light Mode
+
+1. Click theme toggle button in header
+2. Verify:
+   - ✅ Background colors change
+   - ✅ Text colors change
+   - ✅ Component colors change
+   - ✅ Contrast is maintained
+   - ✅ All sections look good in both modes
+
+### 5. Test SEO
+
+Check SEO elements:
+
+```bash
+# View page source (Ctrl+U)
+# Check for:
+```
+
+- ✅ `<title>` tag
+- ✅ `<meta name="description">` tag
+- ✅ Open Graph tags (`og:*`)
+- ✅ Twitter Card tags
+- ✅ Canonical URL
+- ✅ Structured data (JSON-LD)
+
+### 6. Test Performance
+
+```bash
+# In browser DevTools
+# Lighthouse tab
+# Run audit (Mobile/Desktop)
+```
+
+Check scores:
+- Performance: > 90
+- Accessibility: > 95
+- Best Practices: > 90
+- SEO: > 95
+
+---
+
+## Building
+
+### Create Production Build
+
+```bash
+npm run build
+```
+
+**Process**:
+1. Compiles TypeScript
+2. Optimizes React components
+3. Bundles JavaScript/CSS
+4. Exports static HTML
+5. Optimizes images
+6. Generates sitemap
+
+**Expected Output**:
+```
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+ ✓ Linting and checking validity of types
+ ✓ Collecting page data
+ ✓ Generating static pages (X/X)
+ ✓ Finalizing page optimization
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    XXX kB        XXX kB
+└ ○ /404                                 XXX kB        XXX kB
++ First Load JS shared by all            XXX kB
+  ├ chunks/XXX.js                        XXX kB
+  └ other chunks...
+
+Export successful. Files written to /out
+```
+
+### Verify Build
+
+```bash
+# Check that /out directory was created
+ls out
+
+# Expected files:
+# - index.html
+# - _next/ (static assets)
+# - static/ (images, etc)
+# - 404.html
+# - sitemap.xml
+# - robots.txt
+# - manifest.json
+```
+
+### Test Production Build Locally
+
+```bash
+# Install a static server
+npm install -g serve
+
+# Serve the /out directory
+serve out -p 3000
+```
+
+Navigate to `http://localhost:3000` and test:
+- ✅ All pages load
+- ✅ Contact form works
+- ✅ Images load correctly
+- ✅ Navigation works
+- ✅ Theme toggle works
+- ✅ No console errors
+
+---
+
+## Deployment
+
+### Option 1: AWS S3 + CloudFront (Recommended)
+
+#### Prerequisites
+- AWS Account
+- AWS CLI configured
+- S3 bucket created
+- CloudFront distribution (optional)
+
+#### Deploy Using GitHub Actions (Automated)
+
+1. **Set Up GitHub Secrets**:
+   Go to: Repository → Settings → Secrets and variables → Actions
+   
+   Add these secrets:
+   ```
+   AWS_ACCESS_KEY_ID=your_access_key
+   AWS_SECRET_ACCESS_KEY=your_secret_key
+   AWS_REGION=us-east-1
+   S3_BUCKET_NAME=your-bucket-name
+   CF_DISTRIBUTION_ID=your_distribution_id (optional)
+   NEXT_PUBLIC_API_BASE_URL=https://your-api-url.com/api/v1
+   NEXT_PUBLIC_API_KEY=your_production_api_key
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_maps_key (optional)
+   ```
+
+2. **Push to Master Branch**:
+   ```bash
+   git add .
+   git commit -m "Deploy to production"
+   git push origin master
+   ```
+
+3. **Monitor Deployment**:
+   - Go to: Repository → Actions
+   - Watch the workflow run
+   - Check for success ✅
+
+4. **Verify Deployment**:
+   - Visit your S3 website URL or CloudFront domain
+   - Test all functionality
+   - Check browser console for errors
+
+#### Manual Deploy to S3
+
+```bash
+# Build the project
+npm run build
+
+# Deploy to S3
+aws s3 sync ./out s3://your-bucket-name --delete
+
+# Invalidate CloudFront cache (if using)
+aws cloudfront create-invalidation \
+  --distribution-id YOUR_DIST_ID \
+  --paths "/*"
+```
+
+#### Configuration Files
+- `.github/workflows/deploy-to-s3.yml` - GitHub Actions workflow
+- `docs/aws-s3-deployment.md` - Detailed S3 setup guide
+- `docs/s3-only-quick-start.md` - Quick start guide
+
+### Option 2: Vercel (Alternative)
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Login
+vercel login
+
+# Deploy
+vercel --prod
+```
+
+**Note**: Update `next.config.ts` to remove `output: 'export'` for Vercel.
+
+### Option 3: Netlify (Alternative)
+
+1. Connect repository to Netlify
+2. Set build command: `npm run build`
+3. Set publish directory: `out`
+4. Add environment variables
+5. Deploy
+
+### Post-Deployment Checklist
+
+- [ ] Site loads correctly
+- [ ] All pages are accessible
+- [ ] Contact form submits successfully
+- [ ] Images load properly
+- [ ] No console errors
+- [ ] SSL certificate is active (HTTPS)
+- [ ] SEO meta tags are present
+- [ ] Analytics tracking works (if configured)
+- [ ] Performance is good (Lighthouse audit)
+- [ ] Contact form emails are received
+- [ ] Mobile version works correctly
+- [ ] Dark/light mode works
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue: `npm install` fails
+
+**Solution 1**: Clear npm cache
+```bash
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Solution 2**: Check Node.js version
+```bash
+node --version  # Should be v18+
+```
+
+**Solution 3**: Use different registry
+```bash
+npm install --registry https://registry.npmjs.org/
+```
+
+#### Issue: Port 3000 already in use
+
+**Solution**: Use a different port
+```bash
+npm run dev -- -p 3001
+```
+
+Or kill the process using port 3000:
+```bash
+# Mac/Linux
+lsof -ti:3000 | xargs kill
+
+# Windows
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+```
+
+#### Issue: Environment variables not working
+
+**Checklist**:
+- [ ] `.env.local` file exists in root directory
+- [ ] Variables start with `NEXT_PUBLIC_`
+- [ ] No spaces around `=` sign
+- [ ] Restart dev server after changes
+- [ ] Check for typos in variable names
+
+**Test**:
+```bash
+# Print environment variables
+cat .env.local
+
+# Restart server
+npm run dev
+```
+
+#### Issue: Contact form not working
+
+**Debug Steps**:
+
+1. **Check Environment Variables**:
+   ```bash
+   node scripts/test-contact-api.js
+   ```
+
+2. **Check Browser Console**:
+   - Open DevTools (F12)
+   - Look for error messages
+   - Check Network tab for failed requests
+
+3. **Check API Configuration**:
+   ```typescript
+   // In browser console
+   console.log('API URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
+   console.log('API Key:', process.env.NEXT_PUBLIC_API_KEY?.substring(0, 10));
+   ```
+
+4. **Test API Independently**:
+   ```bash
+   curl -X POST \
+     -H "Content-Type: application/json" \
+     -H "x-api-key: YOUR_API_KEY" \
+     -d '{"full_name":"Test","email":"test@test.com","phone":"+57 300 123 4567","company":"","product_type":"Consulta General","quantity":"","message":"Test message"}' \
+     https://your-api-url.com/api/v1/contact/
+   ```
+
+#### Issue: Build fails
+
+**Common causes**:
+
+1. **TypeScript errors**:
+   ```bash
+   npm run lint
+   # Fix reported errors
+   ```
+
+2. **Missing dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Environment variables**:
+   - Add all required variables to build environment
+   - Check GitHub Secrets (for automated builds)
+
+#### Issue: Images not loading
+
+**Check**:
+- [ ] Images exist in `public/static/` directory
+- [ ] File paths are correct (case-sensitive)
+- [ ] File extensions match (`.jpg` vs `.jpeg`)
+- [ ] Images are optimized (not too large)
+
+**Test**:
+```bash
+# List images
+ls -R public/static/
+
+# Check file size
+du -sh public/static/*
+```
+
+#### Issue: Dark mode not working
+
+**Check**:
+- [ ] ThemeContext is properly imported
+- [ ] Theme toggle button is present
+- [ ] LocalStorage is available
+- [ ] No JavaScript errors in console
+
+**Test in Console**:
+```javascript
+// Check current theme
+localStorage.getItem('theme')
+
+// Manually set theme
+localStorage.setItem('theme', 'dark')
+location.reload()
+```
+
+### Getting Help
+
+1. **Check Documentation**:
+   - `README.md` - Project overview
+   - `prompts.md` - Development history
+   - `docs/` - Detailed guides
+
+2. **Check Logs**:
+   ```bash
+   # Development server logs
+   npm run dev
+
+   # Build logs
+   npm run build
+   ```
+
+3. **Enable Verbose Logging**:
+   ```typescript
+   // In src/config/api.ts
+   console.log('🌐 API Request:', { ... });
+   console.log('📡 API Response:', { ... });
+   ```
+
+4. **GitHub Actions Logs**:
+   - Go to: Repository → Actions
+   - Click on failed workflow
+   - Review step-by-step logs
+
+---
+
+## Development Workflow
+
+### Daily Development
+
+```bash
+# 1. Pull latest changes
+git pull origin master
+
+# 2. Install any new dependencies
+npm install
+
+# 3. Start dev server
+npm run dev
+
+# 4. Make changes
+# ... edit files ...
+
+# 5. Test changes
+# - Check browser
+# - Check console
+# - Test on mobile
+
+# 6. Commit changes
+git add .
+git commit -m "Description of changes"
+git push origin master
+```
+
+### Feature Development
+
+```bash
+# 1. Create feature branch
+git checkout -b feature/feature-name
+
+# 2. Make changes
+# ... develop feature ...
+
+# 3. Test thoroughly
+npm run lint
+npm run build
+node scripts/test-contact-api.js
+
+# 4. Commit and push
+git add .
+git commit -m "feat: Add feature description"
+git push origin feature/feature-name
+
+# 5. Create Pull Request
+# ... on GitHub ...
+
+# 6. Merge to master
+# ... after review ...
+```
+
+### Hotfix Workflow
+
+```bash
+# 1. Create hotfix branch
+git checkout -b hotfix/issue-description
+
+# 2. Fix the issue
+# ... make minimal changes ...
+
+# 3. Test fix
+npm run dev
+npm run build
+
+# 4. Deploy immediately
+git commit -m "fix: Issue description"
+git push origin hotfix/issue-description
+
+# 5. Merge to master
+# ... deploy to production ...
+```
+
+---
+
+## Performance Optimization
+
+### Image Optimization
+
+```bash
+# Install image optimization tool
+npm install -g sharp-cli
+
+# Optimize images
+sharp -i public/static/**/*.{jpg,png} -o public/static/ -f webp
+```
+
+### Bundle Analysis
+
+```bash
+# Add bundle analyzer
+npm install --save-dev @next/bundle-analyzer
+
+# Analyze bundle
+ANALYZE=true npm run build
+```
+
+### Caching Strategy
+
+S3/CloudFront caching (in GitHub workflow):
+- Static assets: 1 year cache
+- HTML files: No cache (always fresh)
+- Images: 1 year cache
+
+---
+
+## Maintenance
+
+### Regular Tasks
+
+**Weekly**:
+- [ ] Check for dependency updates
+- [ ] Review error logs
+- [ ] Test contact form
+- [ ] Check site performance
+
+**Monthly**:
+- [ ] Update dependencies
+- [ ] Security audit
+- [ ] Performance audit
+- [ ] Backup data
+
+**Quarterly**:
+- [ ] Review and update content
+- [ ] SEO audit
+- [ ] Accessibility audit
+- [ ] User testing
+
+### Update Dependencies
+
+```bash
+# Check for updates
+npm outdated
+
+# Update packages
+npm update
+
+# Update to latest versions (careful!)
+npx npm-check-updates -u
+npm install
+
+# Test after updates
+npm run dev
+npm run build
+```
+
+---
+
+## Additional Resources
+
+### Documentation
+- [Next.js Docs](https://nextjs.org/docs)
+- [React Docs](https://react.dev/)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [TypeScript Docs](https://www.typescriptlang.org/docs/)
+
+### Project Docs
+- [`README.md`](./README.md) - Project overview
+- [`prompts.md`](./prompts.md) - Development history
+- [`docs/contact-api-integration.md`](./docs/contact-api-integration.md) - API guide
+- [`docs/aws-s3-deployment.md`](./docs/aws-s3-deployment.md) - Deployment guide
+
+### Tools
+- [Next.js CLI](https://nextjs.org/docs/api-reference/cli)
+- [AWS CLI](https://aws.amazon.com/cli/)
+- [GitHub Actions](https://docs.github.com/en/actions)
+
+---
+
+## Support
+
+For issues or questions:
+1. Check this document first
+2. Review error messages carefully
+3. Check browser console logs
+4. Review GitHub Actions logs
+5. Test with `test-contact-api.js` script
+6. Check environment variables
+7. Verify API endpoint is working
 

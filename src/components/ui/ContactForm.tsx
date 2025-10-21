@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { contactData, contactConfig } from '@/data/contactData';
 import type { ContactFormField } from '@/data/contactData';
+import { sendContactForm, type ContactFormData } from '@/config/api-contact';
 
 interface FormData {
   [key: string]: string;
@@ -120,36 +121,23 @@ export function ContactForm({ className = '' }: ContactFormProps) {
     setSubmitStatus('idle');
 
     try {
-      // Web3Forms endpoint
-      const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '';
-      
-      if (!WEB3FORMS_KEY) {
-        console.error('Web3Forms API key not configured');
-        setSubmitStatus('error');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Prepare form data for Web3Forms
-      const submitData = {
-        access_key: WEB3FORMS_KEY,
-        subject: `Nuevo contacto desde Zititex - ${formData.name}`,
-        from_name: formData.name,
-        ...formData,
-        timestamp: new Date().toISOString(),
-        source: 'website_contact_form'
+      // Preparar datos del formulario para el API
+      const contactFormData: ContactFormData = {
+        full_name: formData.full_name || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        company: formData.company || '',
+        product_type: formData.product_type || '',
+        quantity: formData.quantity || '',
+        message: formData.message || '',
       };
 
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(submitData),
-      });
+      console.log('📤 Enviando formulario de contacto:', contactFormData);
 
-      const result = await response.json();
+      // Enviar a la API
+      const result = await sendContactForm(contactFormData);
+
+      console.log('📥 Resultado del envío:', result);
 
       if (result.success) {
         setSubmitStatus('success');
@@ -160,11 +148,13 @@ export function ContactForm({ className = '' }: ContactFormProps) {
         });
         setFormData(cleanData);
         setErrors({});
+        
+        console.log('✅ Formulario enviado exitosamente');
       } else {
-        throw new Error(result.message || 'Error en la respuesta del servidor');
+        throw new Error(result.message || 'Error al enviar el formulario');
       }
     } catch (error) {
-      console.error('Error al enviar formulario:', error);
+      console.error('❌ Error al enviar formulario:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

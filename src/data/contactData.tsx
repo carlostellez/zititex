@@ -117,8 +117,8 @@ export const contactData: ContactSection = {
 
   formFields: [
     {
-      id: "name",
-      name: "name",
+      id: "full_name",
+      name: "full_name",
       label: "Nombre Completo",
       type: "text",
       placeholder: "Ingresa tu nombre completo",
@@ -162,8 +162,8 @@ export const contactData: ContactSection = {
       }
     },
     {
-      id: "productType",
-      name: "productType",
+      id: "product_type",
+      name: "product_type",
       label: "Tipo de Producto",
       type: "select",
       placeholder: "Selecciona el tipo de producto",

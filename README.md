@@ -9,14 +9,16 @@ Modern, responsive website for Zititex, a manufacturer specializing in labels, t
 
 ## 🚀 Features
 
-- **Modern UI/UX**: Beautiful, responsive design with smooth animations
+- **Modern UI/UX**: Beautiful, responsive design with smooth animations and dark/light mode
 - **SEO Optimized**: Server-side rendering with Next.js 15 App Router
 - **Performance**: Static export optimized for CDN delivery
-- **Contact Integration**: Form with email notifications and WhatsApp integration
+- **Backend API Integration**: Robust contact form with custom API integration
+- **Contact Integration**: Advanced form validation and WhatsApp integration
 - **Google Maps**: Interactive map showing business location
 - **Product Catalog**: Comprehensive showcase of all products with images
 - **Progressive Web App**: Offline support with manifest.json
 - **Accessibility**: WCAG compliant with semantic HTML
+- **CI/CD Pipeline**: Automated deployment to AWS S3 + CloudFront
 
 ## 📋 Table of Contents
 
@@ -105,18 +107,26 @@ zititex/
 │   │   │   └── ParallaxSection.tsx
 │   │   └── seo/                  # SEO components
 │   │       └── SEOImage.tsx      # Optimized images
-│   ├── config/
+│   ├── config/                   # Configuration layer
+│   │   ├── api.ts                # Core API configuration
+│   │   ├── api-contact.ts        # Contact API functions
 │   │   └── seo.ts                # SEO configuration
 │   ├── contexts/
 │   │   └── ThemeContext.tsx      # Theme state management
-│   └── data/                     # Data layer
-│       ├── benefitsData.tsx      # Benefits content
-│       ├── contactData.tsx       # Contact information
-│       ├── heroData.ts           # Hero content
-│       └── productsData.tsx      # Product catalog
+│   ├── data/                     # Data layer
+│   │   ├── benefitsData.tsx      # Benefits content
+│   │   ├── contactData.tsx       # Contact information & form fields
+│   │   ├── heroData.ts           # Hero content
+│   │   └── productsData.tsx      # Product catalog
+│   └── types/
+│       └── env.d.ts              # Environment variables types
+├── scripts/
+│   └── test-contact-api.js       # API testing script
 ├── next.config.ts                # Next.js configuration
 ├── tailwind.config.ts            # Tailwind configuration
 ├── tsconfig.json                 # TypeScript configuration
+├── prompts.md                    # Development history & prompts
+├── run.md                        # Detailed run instructions
 └── package.json                  # Dependencies and scripts
 ```
 
@@ -146,16 +156,24 @@ zititex/
    cp env.example .env.local
    ```
    
-   Edit `.env.local` and add your API keys:
+   Edit `.env.local` and add your configuration:
    ```env
-   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_google_maps_api_key
-   NEXT_PUBLIC_WEB3FORMS_KEY=your_actual_web3forms_access_key
+   # Backend API (REQUIRED for contact form)
+   NEXT_PUBLIC_API_BASE_URL=https://your-api-url.com/api/v1
+   NEXT_PUBLIC_API_KEY=your_api_key_here
+   
+   # Google Maps (Optional)
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+   
+   # Environment
+   NODE_ENV=development
    ```
    
-   **Get your Web3Forms key** (free, no signup required):
-   - Visit: https://web3forms.com
-   - Enter your email address
-   - Copy the Access Key sent to your email
+   **Backend API Setup**:
+   - Set up your backend API endpoint for contact form submissions
+   - The API should accept POST requests to `/contact/` endpoint
+   - Include API key authentication via `x-api-key` header
+   - See [Contact API Integration](./docs/contact-api-integration.md) for details
 
 4. **Run the development server**:
    ```bash
@@ -181,6 +199,9 @@ npm start
 
 # Run linter
 npm run lint
+
+# Test contact form API connectivity
+node scripts/test-contact-api.js
 ```
 
 ### Development Workflow
@@ -227,15 +248,16 @@ The application automatically deploys to AWS S3 when you push to the `master` br
 
 ### Required GitHub Secrets
 
-Configure these in GitHub repository settings:
+Configure these in GitHub repository settings (Settings → Secrets and variables → Actions):
 
 - `S3_BUCKET_NAME`: Your S3 bucket name
 - `AWS_ACCESS_KEY_ID`: AWS credentials
 - `AWS_SECRET_ACCESS_KEY`: AWS credentials
 - `AWS_REGION`: AWS region (e.g., `us-east-1`)
 - `CF_DISTRIBUTION_ID`: CloudFront distribution ID (optional)
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API key
-- `NEXT_PUBLIC_WEB3FORMS_KEY`: Web3Forms access key
+- `NEXT_PUBLIC_API_BASE_URL`: Backend API base URL (REQUIRED)
+- `NEXT_PUBLIC_API_KEY`: Backend API authentication key (REQUIRED)
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API key (optional)
 
 ### Manual Deployment
 
@@ -258,53 +280,125 @@ aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths "/*"
 
 ### Contact Form Integration
 
-The contact form uses **Web3Forms**, a free third-party service that works perfectly with static sites.
+The contact form integrates with a custom backend API for robust data handling and processing.
 
-**Integration Details**:
-- **Service**: Web3Forms (https://web3forms.com)
-- **Type**: Client-side form submission
-- **Cost**: Free (up to 250 submissions/month)
-- **Setup**: No server required, works with static export
-
-**How it works**:
-1. User fills out the contact form
-2. Form data is validated client-side
-3. Data is sent to Web3Forms API
-4. Web3Forms forwards the email to your configured email address
-5. User receives success/error message
-
-**Configuration**:
-```typescript
-// Form submits to Web3Forms API
-const submitData = {
-  access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
-  subject: `New contact from Zititex - ${name}`,
-  from_name: name,
-  email: email,
-  message: message,
-  // ... other form fields
-};
-
-await fetch('https://api.web3forms.com/submit', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(submitData)
-});
+**Architecture Overview**:
+```
+Frontend (React)
+    ↓
+ContactForm Component
+    ↓
+sendContactForm() function
+    ↓
+apiRequest() (core API layer)
+    ↓
+Backend API (POST /contact/)
+    ↓
+Database / Email Service
 ```
 
-**Setup Instructions**:
-1. Visit https://web3forms.com
-2. Enter your email address where you want to receive form submissions
-3. Copy the Access Key
-4. Add to `.env.local`: `NEXT_PUBLIC_WEB3FORMS_KEY=your_access_key`
-5. Add to GitHub Secrets for deployment
+**Integration Details**:
+- **Type**: RESTful API
+- **Authentication**: API Key via `x-api-key` header
+- **Format**: JSON request/response
+- **Deployment**: Works with static export (client-side API calls)
+
+**API Endpoint**:
+```
+POST {NEXT_PUBLIC_API_BASE_URL}/contact/
+
+Headers:
+  Content-Type: application/json
+  x-api-key: {NEXT_PUBLIC_API_KEY}
+
+Body:
+{
+  "full_name": "John Doe",
+  "email": "john@example.com",
+  "phone": "+57 300 123 4567",
+  "company": "Example Corp",
+  "product_type": "Etiquetas de Composición",
+  "quantity": "1,000 - 5,000 unidades",
+  "message": "I'm interested in..."
+}
+```
+
+**Success Response (200 OK)**:
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "Contact form sent successfully"
+}
+```
+
+**Error Response (4xx/5xx)**:
+```json
+{
+  "success": false,
+  "error": "Error message",
+  "message": "Error sending contact form"
+}
+```
+
+**Implementation Example**:
+```typescript
+// src/config/api-contact.ts
+export async function sendContactForm(formData: ContactFormData) {
+  try {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/contact/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_CONFIG.API_KEY,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Error sending form');
+    }
+
+    return {
+      success: true,
+      data,
+      message: 'Contact form sent successfully'
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message,
+      message: 'Error sending contact form'
+    };
+  }
+}
+```
 
 **Features**:
-- Spam protection with honeypot
-- Email notifications
-- Custom subject lines
-- No backend required
-- GDPR compliant
+- ✅ Full control over data handling
+- ✅ Custom validation and processing
+- ✅ Direct database integration
+- ✅ Enhanced security
+- ✅ Comprehensive error handling
+- ✅ Detailed logging and debugging
+- ✅ Easy to test and monitor
+
+**Testing**:
+```bash
+# Test API connectivity
+node scripts/test-contact-api.js
+```
+
+**Documentation**:
+See [Contact API Integration Guide](./docs/contact-api-integration.md) for complete documentation including:
+- Architecture details
+- Request/response formats
+- Error handling
+- Testing guide
+- Troubleshooting
+- Security considerations
 
 ### Data Layer
 
@@ -321,8 +415,9 @@ Data is organized in the `src/data/` directory:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Yes | Google Maps API key for map integration |
-| `NEXT_PUBLIC_WEB3FORMS_KEY` | Yes | Web3Forms access key for contact form |
+| `NEXT_PUBLIC_API_BASE_URL` | Yes | Backend API base URL (e.g., `https://api.example.com/api/v1`) |
+| `NEXT_PUBLIC_API_KEY` | Yes | Backend API authentication key |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | No | Google Maps API key for map integration |
 | `NODE_ENV` | No | Environment (development/production) |
 
 ### Next.js Configuration
@@ -348,14 +443,21 @@ Custom configuration in `tailwind.config.ts`:
 
 ## 📚 Documentation
 
-### Available Guides
+### Project Documentation
 
-- [AWS S3 Deployment](./docs/aws-s3-deployment.md) - Complete deployment guide
-- [Contact Module](./docs/contact-module-guide.md) - Contact feature documentation
-- [Product Catalog](./docs/expanded-product-catalog.md) - Product management guide
-- [Image Paths](./docs/image-paths-fix.md) - Image handling guide
+- **[run.md](./run.md)** - Comprehensive guide on how to run the project
+- **[prompts.md](./prompts.md)** - Development history and decisions
 
-### Additional Resources
+### Feature Guides
+
+- **[Contact API Integration](./docs/contact-api-integration.md)** - Complete API integration guide
+- **[Contact Module](./docs/contact-module-guide.md)** - Contact feature documentation
+- **[AWS S3 Deployment](./docs/aws-s3-deployment.md)** - Complete deployment guide
+- **[S3 Quick Start](./docs/s3-only-quick-start.md)** - Fast deployment guide
+- **[Product Catalog](./docs/expanded-product-catalog.md)** - Product management guide
+- **[Image Paths](./docs/image-paths-fix.md)** - Image handling guide
+
+### Technology Documentation
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [React Documentation](https://react.dev)
@@ -379,6 +481,39 @@ npm install
 npm run lint
 ```
 
+**Issue**: Contact form not working
+```bash
+# Solution 1: Test API connectivity
+node scripts/test-contact-api.js
+
+# Solution 2: Check environment variables
+cat .env.local
+
+# Solution 3: Check browser console for errors
+# Open DevTools (F12) and check Console tab
+```
+
+**Issue**: API returns HTML instead of JSON
+```bash
+# Possible causes:
+# - Incorrect API URL
+# - Endpoint doesn't exist (404)
+# - Server error (500)
+
+# Solution: Verify API URL format
+# Correct: https://api.example.com/api/v1/contact/
+# Include trailing slash if required by backend
+```
+
+**Issue**: CORS errors when submitting form
+```bash
+# Solution: Configure backend to allow your domain
+# The backend must include proper CORS headers
+# Allow-Origin: https://yourdomain.com
+# Allow-Methods: POST
+# Allow-Headers: Content-Type, x-api-key
+```
+
 **Issue**: Google Maps not loading
 ```bash
 # Solution: Verify API key is set correctly
@@ -391,6 +526,33 @@ echo $NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 # Correct: /static/products/image.jpg
 # Incorrect: /products/image.jpg
 ```
+
+### Debugging Contact Form
+
+1. **Check Browser Console**:
+   - Open DevTools (F12)
+   - Go to Console tab
+   - Look for error messages with emoji indicators:
+     - 📤 = Sending form
+     - 🌐 = API request
+     - 📡 = API response
+     - ✅ = Success
+     - ❌ = Error
+
+2. **Check Network Tab**:
+   - Open DevTools (F12)
+   - Go to Network tab
+   - Submit form
+   - Look for POST request to `/contact/`
+   - Check request headers and body
+   - Check response status and data
+
+3. **Test API Independently**:
+   ```bash
+   node scripts/test-contact-api.js
+   ```
+
+For detailed troubleshooting, see [Contact API Integration Guide](./docs/contact-api-integration.md#troubleshooting)
 
 ## 📊 Performance
 
