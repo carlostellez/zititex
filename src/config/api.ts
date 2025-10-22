@@ -5,55 +5,29 @@
  * Compatible with S3 + CloudFront (static content)
  */
 
-// Helper function to get environment variables from static file
-function getStaticEnvVar(key: string, fallback: string = ''): string {
-  // In development, read directly from process.env
-  if (process.env.NODE_ENV === 'development') {
-    const value = process.env[key];
-    if (value) {
-      console.log(`✅ Loaded ${key}:`, value.substring(0, 30) + '...');
-      return value;
-    }
-  }
-  
-  // Try to get from window.ENV (static file - production)
-  if (typeof window !== 'undefined' && window.ENV && window.ENV[key]) {
-    return window.ENV[key];
-  }
-  
-  // Fallback to process.env (for development)
-  if (typeof process !== 'undefined' && process.env && process.env[key]) {
-    return process.env[key];
-  }
-  
-  console.warn(`⚠️  Variable ${key} not found, using fallback:`, fallback);
-  return fallback;
-}
+// Get API configuration directly from environment variables
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY || '';
 
-// Helper function to check if API is configured
-function isApiConfigured(): boolean {
-  const apiUrl = getStaticEnvVar('NEXT_PUBLIC_API_BASE_URL');
-  const apiKey = getStaticEnvVar('NEXT_PUBLIC_API_KEY');
-  
-  return !!(apiUrl && apiKey && 
-           !apiUrl.includes('your_') && !apiUrl.includes('tu_') &&
-           !apiKey.includes('your_') && !apiKey.includes('tu_'));
-}
+// Debug logs
+console.log('🔍 Environment Variables Check:', {
+  'process.env.NEXT_PUBLIC_API_BASE_URL': process.env.NEXT_PUBLIC_API_BASE_URL ? 'FOUND' : '❌ MISSING',
+  'process.env.NEXT_PUBLIC_API_KEY': process.env.NEXT_PUBLIC_API_KEY ? 'FOUND' : '❌ MISSING',
+  'process.env.NODE_ENV': process.env.NODE_ENV,
+});
 
 export const API_CONFIG = {
-  // Base URL for external API
-  BASE_URL: getStaticEnvVar('NEXT_PUBLIC_API_BASE_URL', ''),
-  API_KEY: getStaticEnvVar('NEXT_PUBLIC_API_KEY', ''),
+  BASE_URL,
+  API_KEY,
 } as const;
 
-// Debug log in development
-if (process.env.NODE_ENV === 'development') {
-  console.log('🔧 API_CONFIG initialized:', {
-    BASE_URL: API_CONFIG.BASE_URL ? API_CONFIG.BASE_URL.substring(0, 50) + '...' : '❌ EMPTY',
-    API_KEY: API_CONFIG.API_KEY ? '✅ Configured' : '❌ EMPTY',
-    NODE_ENV: process.env.NODE_ENV
-  });
-}
+// Debug log
+console.log('🔧 API_CONFIG initialized:', {
+  BASE_URL: API_CONFIG.BASE_URL ? API_CONFIG.BASE_URL.substring(0, 50) + '...' : '❌ EMPTY',
+  API_KEY: API_CONFIG.API_KEY ? '✅ ' + API_CONFIG.API_KEY.substring(0, 10) + '...' : '❌ EMPTY',
+  NODE_ENV: process.env.NODE_ENV,
+  'Full BASE_URL': API_CONFIG.BASE_URL,
+});
 
 /**
  * Core API request function
@@ -85,17 +59,7 @@ export async function apiRequest<T = any>(
       'x-api-key': API_CONFIG.API_KEY
     };
   }
-  
-  console.log('🌐 API Request:', {
-    url,
-    method: config.method || 'POST',
-    headers: config.headers,
-    body: config.body ? JSON.parse(config.body as string) : undefined,
-    apiKeyConfigured: !!API_CONFIG.API_KEY,
-    apiKeyLength: API_CONFIG.API_KEY?.length || 0,
-    baseUrl: API_CONFIG.BASE_URL
-  });
-  
+    
   try {
     const response = await fetch(url, config);
     

@@ -27,12 +27,14 @@ export interface ContactFormData {
  */
 export async function sendContactForm(formData: ContactFormData) {  
   try {
-    return await apiRequest('/contact/', {
+    console.log('📤 sendContactForm called with:', {
+      full_name: formData.full_name,
+      email: formData.email,
+      product_type: formData.product_type,
+    });
+        
+    const result = await apiRequest('/contact/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_CONFIG.API_KEY,
-      },
       body: JSON.stringify({
         full_name: formData.full_name.trim(),
         email: formData.email.trim(),
@@ -42,9 +44,15 @@ export async function sendContactForm(formData: ContactFormData) {
         quantity: formData.quantity.trim(),
         message: formData.message.trim(),
       }),
-    });    
+    });
+    
+    return {
+      success: true,
+      data: result,
+      message: 'Contact form sent successfully'
+    };
   } catch (error) {
-    console.error('Error sending contact form:', error);
+    console.error('❌ Error in sendContactForm:', error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : String(error),
