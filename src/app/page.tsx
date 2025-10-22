@@ -4,7 +4,7 @@ import { Hero } from '@/components/sections/Hero';
 import { Benefits } from '@/components/sections/Benefits';
 import { Products } from '@/components/sections/Products';
 import { Contact } from '@/components/sections/Contact';
-import { generateBreadcrumbSchema } from '@/config/seo';
+import { generateBreadcrumbSchema, productListSchema } from '@/config/seo';
 
 export default function Home() {
   // Breadcrumb schema para la página principal
@@ -65,6 +65,12 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(faqSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productListSchema),
         }}
       />
 

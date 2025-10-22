@@ -337,10 +337,57 @@ export const productSchema = (product: any) => ({
   }
 });
 
+// Schema para WebSite con SearchAction
+export const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${seoConfig.siteUrl}/#website`,
+  url: seoConfig.siteUrl,
+  name: seoConfig.siteName,
+  description: 'Fabricante especializado en etiquetas textiles, marquillas personalizadas y garra pantalón para la industria textil colombiana.',
+  publisher: {
+    '@id': `${seoConfig.siteUrl}/#organization`
+  },
+  potentialAction: [{
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${seoConfig.siteUrl}/#productos?q={search_term_string}`
+    },
+    'query-input': 'required name=search_term_string'
+  }],
+  inLanguage: 'es-CO'
+};
+
+// Schema para WebPage
+export const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${seoConfig.siteUrl}/#webpage`,
+  url: seoConfig.siteUrl,
+  name: 'Zititex - Etiquetas y Marquillas Premium',
+  isPartOf: {
+    '@id': `${seoConfig.siteUrl}/#website`
+  },
+  about: {
+    '@id': `${seoConfig.siteUrl}/#organization`
+  },
+  description: 'Especialistas en fabricación de etiquetas de composición, marquillas tejidas y garra pantalón. Más de 15 años sirviendo a la industria textil colombiana.',
+  breadcrumb: {
+    '@id': `${seoConfig.siteUrl}/#breadcrumb`
+  },
+  inLanguage: 'es-CO',
+  potentialAction: [{
+    '@type': 'ReadAction',
+    target: [seoConfig.siteUrl]
+  }]
+};
+
 // Función para generar breadcrumbs
 export const generateBreadcrumbSchema = (items: Array<{name: string, url: string}>) => ({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
+  '@id': `${seoConfig.siteUrl}/#breadcrumb`,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
@@ -348,4 +395,36 @@ export const generateBreadcrumbSchema = (items: Array<{name: string, url: string
     item: `${seoConfig.siteUrl}${item.url}`
   }))
 });
+
+// Schema para ItemList de productos
+export const productListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Etiquetas de Composición',
+      url: `${seoConfig.siteUrl}#producto-etiquetas`
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Marquillas de Marca',
+      url: `${seoConfig.siteUrl}#producto-marquillas`
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Garra Pantalón',
+      url: `${seoConfig.siteUrl}#producto-garra-pantalon`
+    },
+    {
+      '@type': 'ListItem',
+      position: 4,
+      name: 'Bolsas de Papel',
+      url: `${seoConfig.siteUrl}#producto-bolsas-papel`
+    }
+  ]
+};
 

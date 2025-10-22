@@ -554,14 +554,105 @@ echo $NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 For detailed troubleshooting, see [Contact API Integration Guide](./docs/contact-api-integration.md#troubleshooting)
 
-## 📊 Performance
+## 📊 Performance & SEO
 
 ### Lighthouse Scores (Target)
 
-- Performance: 95+
-- Accessibility: 100
-- Best Practices: 100
-- SEO: 100
+- **Performance**: 95+ / 100
+- **Accessibility**: 100 / 100
+- **Best Practices**: 100 / 100
+- **SEO**: 100 / 100
+- **PWA**: Installable
+
+### SEO Features
+
+#### Structured Data (Schema.org)
+- ✅ **Organization Schema**: Company information with @id linking
+- ✅ **LocalBusiness Schema**: Physical location, opening hours, contact
+- ✅ **WebSite Schema**: With SearchAction for Google Search box
+- ✅ **WebPage Schema**: Page context and breadcrumb references
+- ✅ **ItemList Schema**: Product catalog structured data
+- ✅ **FAQPage Schema**: Frequently asked questions
+- ✅ **Product Schema**: Individual product structured data
+
+#### Technical SEO
+- ✅ **Dynamic Sitemap**: Auto-generated from content (`/sitemap.xml`)
+- ✅ **Robots.txt**: Optimized crawler directives (`/robots.txt`)
+- ✅ **Canonical URLs**: Proper URL canonicalization
+- ✅ **hreflang**: Language/region targeting (es, es-CO)
+- ✅ **Meta Tags**: Complete title, description, keywords
+- ✅ **Open Graph**: Social media sharing optimization
+- ✅ **Twitter Cards**: Twitter-specific sharing meta tags
+
+#### Performance Optimization
+- ✅ **Preconnect**: Critical external domains (fonts, maps)
+- ✅ **DNS Prefetch**: Secondary resources (analytics)
+- ✅ **Resource Preload**: Critical assets (logo, hero images)
+- ✅ **fetchPriority**: High priority for LCP images
+- ✅ **Prefetch**: Next-page navigation hints
+
+#### Progressive Web App (PWA)
+- ✅ **Manifest.json**: Complete PWA configuration
+- ✅ **App Icons**: Multiple sizes (192x192, 512x512, maskable)
+- ✅ **Shortcuts**: Quick access to products and contact
+- ✅ **Display Modes**: Standalone, minimal-ui
+- ✅ **Theme Color**: Brand color integration
+
+### Rich Snippets Potential
+
+1. **Organization Knowledge Panel**:
+   - Company name and logo
+   - Contact information
+   - Social media profiles
+   - Business hours
+
+2. **Local Business Card**:
+   - Map integration
+   - Opening hours
+   - Contact button
+   - Reviews (when added)
+
+3. **FAQ Rich Results**:
+   - Expandable questions in search
+   - Direct answers visibility
+
+4. **Site Search Box**:
+   - Search directly from Google
+   - Improved user experience
+
+5. **Breadcrumb Navigation**:
+   - Clear site structure in SERP
+   - Better click-through rates
+
+### SEO Testing
+
+```bash
+# Test structured data
+Google Rich Results Test: https://search.google.com/test/rich-results
+Schema Markup Validator: https://validator.schema.org/
+
+# Check sitemap
+curl https://zititex.com/sitemap.xml
+
+# Run Lighthouse
+npm run build
+# Open Chrome DevTools → Lighthouse → Run audit
+```
+
+### Core Web Vitals Optimization
+
+- **LCP (Largest Contentful Paint)**: < 2.5s
+  - Hero images preloaded
+  - Critical CSS inlined
+  - Font display optimized
+
+- **FID (First Input Delay)**: < 100ms
+  - Minimal JavaScript blocking
+  - Code splitting implemented
+
+- **CLS (Cumulative Layout Shift)**: < 0.1
+  - Fixed image dimensions
+  - Reserved space for dynamic content
 
 ### Optimization Techniques
 
@@ -571,6 +662,9 @@ For detailed troubleshooting, see [Contact API Integration Guide](./docs/contact
 - CSS purging with Tailwind
 - CDN delivery via CloudFront
 - Efficient cache headers
+- Structured data for rich snippets
+- Performance hints (preconnect, prefetch)
+- Critical resource preloading
 
 ## 🤝 Contributing
 

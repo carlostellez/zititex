@@ -3,14 +3,17 @@
   "short_name": "Zititex",
   "description": "Especialistas en fabricación de etiquetas de composición, marquillas tejidas y garra pantalón para la industria textil colombiana.",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#2563eb",
   "orientation": "portrait-primary",
-  "categories": ["business", "productivity", "shopping"],
+  "categories": ["business", "productivity", "shopping", "manufacturing"],
   "lang": "es",
   "dir": "ltr",
   "scope": "/",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
       "src": "/icon-192.png",

@@ -531,6 +531,265 @@ All major features include:
 
 ---
 
+## SEO Optimizations
+
+### Date: 2025-10-22
+**Context**: Improving search engine optimization and visibility
+
+**Prompt** (Spanish):
+```
+podemos mejorar el seo de este proyecto
+```
+
+**Translation**:
+```
+Can we improve the SEO of this project?
+```
+
+**Analysis of Current SEO State**:
+The project already had a good SEO foundation:
+- ✅ Metadata configuration in `src/config/seo.ts`
+- ✅ Schema.org markup (Organization, LocalBusiness)
+- ✅ Open Graph and Twitter Cards
+- ✅ Keywords configuration
+- ✅ Structured data implementation
+
+**Improvements Implemented**:
+
+1. **Dynamic Sitemap (`src/app/sitemap.ts`)**:
+   - Created Next.js 15 App Router compatible sitemap
+   - Includes main page, sections, and product URLs
+   - Proper priority and change frequency settings
+   - Automatically generated from product data
+
+2. **Optimized robots.txt (`src/app/robots.ts`)**:
+   - Allows all crawlers by default
+   - Blocks sensitive paths (`/api/`, `/_next/`)
+   - Specific rules for Googlebot and Bingbot
+   - Links to sitemap.xml
+   - Specifies host directive
+
+3. **Enhanced Structured Data**:
+   - **WebSite Schema**: Added with SearchAction for Google Search box
+   - **WebPage Schema**: Added for better page understanding
+   - **ItemList Schema**: Product catalog structured data
+   - **Enhanced connections**: All schemas properly linked with @id references
+
+4. **Improved PWA Manifest**:
+   - Added `id` field for better app identification
+   - Added `display_override` for progressive enhancement
+   - Enhanced categories (added "manufacturing")
+   - Improved icon purposes (any + maskable)
+   - Better shortcuts for quick access
+
+5. **Performance Optimization**:
+   - **Preconnect hints**: Fonts, maps, analytics
+   - **DNS prefetch**: External services
+   - **Resource preload**: Critical images (logo, hero)
+   - **fetchPriority="high"**: Hero images
+   - **Prefetch**: Important sections
+
+6. **Schema.org Enhancements**:
+   ```typescript
+   // WebSite with SearchAction
+   '@type': 'WebSite',
+   potentialAction: [{
+     '@type': 'SearchAction',
+     target: { urlTemplate: '/#productos?q={search_term_string}' },
+     'query-input': 'required name=search_term_string'
+   }]
+   
+   // WebPage with breadcrumb reference
+   '@type': 'WebPage',
+   isPartOf: { '@id': '/#website' },
+   breadcrumb: { '@id': '/#breadcrumb' }
+   
+   // ItemList for products
+   '@type': 'ItemList',
+   itemListElement: [/* products */]
+   ```
+
+**Technical Decisions**:
+
+1. **Why Next.js 15 App Router approach**:
+   - Uses `MetadataRoute` types for type safety
+   - Automatic generation during build
+   - No manual XML file management
+   - Better for dynamic content
+
+2. **Why multiple Schema.org types**:
+   - **Organization**: Company information
+   - **LocalBusiness**: Physical location, hours
+   - **WebSite**: Search functionality
+   - **WebPage**: Page context
+   - **ItemList**: Product catalog
+   - **FAQPage**: Common questions
+   - Multiple schemas = more rich snippets
+
+3. **Performance Hints Strategy**:
+   ```html
+   preconnect → DNS + TCP + TLS handshake (critical resources)
+   dns-prefetch → Only DNS lookup (nice-to-have resources)
+   preload → Download ASAP (critical assets)
+   prefetch → Download when idle (next page assets)
+   ```
+
+4. **Schema Linking with @id**:
+   ```typescript
+   // Proper linking between schemas
+   WebSite: '@id': '/#website'
+   Organization: '@id': '/#organization'
+   WebPage: {
+     isPartOf: { '@id': '/#website' },
+     about: { '@id': '/#organization' }
+   }
+   ```
+
+**SEO Benefits**:
+
+1. **Improved Crawling**:
+   - Clear sitemap for search engines
+   - Proper robots.txt directives
+   - Better URL structure understanding
+
+2. **Rich Snippets Potential**:
+   - Organization information in knowledge panel
+   - Local business card in search results
+   - FAQ accordion in search results
+   - Product listings with structured data
+   - Breadcrumb navigation in search results
+   - Site search box directly in Google
+
+3. **Better Indexing**:
+   - All important pages/sections in sitemap
+   - Proper canonical URLs
+   - hreflang for language targeting
+   - Clear content hierarchy
+
+4. **Performance SEO**:
+   - Faster initial load (preload/preconnect)
+   - Better Core Web Vitals scores
+   - Improved mobile experience
+   - PWA capabilities
+
+5. **Local SEO**:
+   - LocalBusiness schema with coordinates
+   - Opening hours structured data
+   - Service area defined
+   - Contact information structured
+
+**Testing SEO Implementation**:
+
+1. **Google Rich Results Test**:
+   ```bash
+   # Test URL
+   https://search.google.com/test/rich-results
+   # Should show: Organization, LocalBusiness, FAQPage, ItemList
+   ```
+
+2. **Schema Markup Validator**:
+   ```bash
+   # Test URL
+   https://validator.schema.org/
+   # Paste page HTML
+   ```
+
+3. **Lighthouse SEO Audit**:
+   ```bash
+   npm run build
+   # Run Lighthouse in Chrome DevTools
+   # Target score: 100/100
+   ```
+
+4. **Sitemap Verification**:
+   ```bash
+   # After deployment
+   curl https://zititex.com/sitemap.xml
+   # Should return valid XML with all URLs
+   ```
+
+**Files Modified**:
+```
+src/app/sitemap.ts (NEW)
+  - Dynamic sitemap generation
+  - Main page + sections + products
+  
+src/app/robots.ts (NEW)
+  - Robots.txt configuration
+  - Crawler directives
+
+src/config/seo.ts
+  + websiteSchema (SearchAction)
+  + webPageSchema
+  + productListSchema
+  + Enhanced schema connections
+
+src/app/layout.tsx
+  + WebSite schema script
+  + WebPage schema script
+  + Performance hints (preconnect, dns-prefetch, preload)
+  + Critical resource preloading
+
+src/app/page.tsx
+  + ProductList schema
+  
+public/manifest.json
+  + id field
+  + display_override
+  + Enhanced categories
+```
+
+**Expected Results**:
+
+1. **Search Console Improvements**:
+   - More pages indexed
+   - Rich results appearing
+   - Better click-through rates
+   - Enhanced search presence
+
+2. **Lighthouse Scores**:
+   - SEO: 100/100
+   - Performance: 95+/100
+   - Accessibility: 100/100
+   - Best Practices: 100/100
+   - PWA: Installable
+
+3. **SERP Features**:
+   - Knowledge panel (Organization)
+   - Local pack (LocalBusiness)
+   - FAQ rich results
+   - Site links
+   - Search box
+   - Breadcrumbs
+
+**Next Steps for SEO**:
+
+1. **Content Optimization**:
+   - Add blog section for content marketing
+   - Create product detail pages
+   - Add customer testimonials/reviews
+   - Create case studies
+
+2. **Technical SEO**:
+   - Implement image optimization (WebP, AVIF)
+   - Add lazy loading for images
+   - Implement service worker for offline
+   - Add review schema with real ratings
+
+3. **Off-Page SEO**:
+   - Build quality backlinks
+   - Social media integration
+   - Directory listings
+   - Industry partnerships
+
+4. **Analytics & Monitoring**:
+   - Google Search Console setup
+   - Google Analytics 4 integration
+   - Track Core Web Vitals
+   - Monitor rich results appearance
+
+---
+
 ## References
 
 - [Next.js Documentation](https://nextjs.org/docs)

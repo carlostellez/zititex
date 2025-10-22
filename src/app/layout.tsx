@@ -3,7 +3,13 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { FloatingWhatsApp } from '@/components/ui/FloatingWhatsApp'
-import { baseMetadata, organizationSchema, localBusinessSchema } from '@/config/seo'
+import { 
+  baseMetadata, 
+  organizationSchema, 
+  localBusinessSchema,
+  websiteSchema,
+  webPageSchema
+} from '@/config/seo'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -35,14 +41,49 @@ export default function RootLayout({
             __html: JSON.stringify(localBusinessSchema),
           }}
         />
+        {/* Structured Data - WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
+        {/* Structured Data - WebPage */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webPageSchema),
+          }}
+        />
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         
         {/* DNS Prefetch */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//maps.googleapis.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+        
+        {/* Preload critical assets */}
+        <link 
+          rel="preload" 
+          href="/static/logo/zititex.png" 
+          as="image" 
+          type="image/png"
+        />
+        <link 
+          rel="preload" 
+          href="/static/hero/hero-1.jpg" 
+          as="image" 
+          type="image/jpeg"
+          fetchPriority="high"
+        />
+        
+        {/* Resource hints for better performance */}
+        <link rel="prefetch" href="/#productos" />
+        <link rel="prefetch" href="/#contacto" />
         
         {/* Canonical URL */}
         <link rel="canonical" href="https://zititex.com" />
