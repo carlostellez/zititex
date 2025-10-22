@@ -4,8 +4,7 @@
  * Handles contact form submissions and related functionality
  */
 
-import { apiRequest } from './api';
-import { API_CONFIG } from './api';
+import { apiRequest, API_CONFIG } from './api';
 
 /**
  * Contact form data interface
@@ -26,29 +25,24 @@ export interface ContactFormData {
  * @param formData - Contact form data
  * @returns Promise with the response
  */
-export async function sendContactForm(
-  formData: ContactFormData
-  ) {  
+export async function sendContactForm(formData: ContactFormData) {  
   try {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'x-api-key': API_CONFIG.API_KEY,
-    };
-
-    const response = await fetch(`${API_CONFIG.BASE_URL}/contact/`, {
+    return await apiRequest('/contact/', {
       method: 'POST',
-      headers,
-      body: JSON.stringify(formData),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return {
-      success: true,
-      data,
-      message: 'Contact form sent successfully'
-    };
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_CONFIG.API_KEY,
+      },
+      body: JSON.stringify({
+        full_name: formData.full_name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        company: formData.company.trim(),
+        product_type: formData.product_type.trim(),
+        quantity: formData.quantity.trim(),
+        message: formData.message.trim(),
+      }),
+    });    
   } catch (error) {
     console.error('Error sending contact form:', error);
     return { 

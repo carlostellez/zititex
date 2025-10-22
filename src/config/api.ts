@@ -7,7 +7,16 @@
 
 // Helper function to get environment variables from static file
 function getStaticEnvVar(key: string, fallback: string = ''): string {
-  // Try to get from window.ENV (static file)
+  // In development, read directly from process.env
+  if (process.env.NODE_ENV === 'development') {
+    const value = process.env[key];
+    if (value) {
+      console.log(`✅ Loaded ${key}:`, value.substring(0, 30) + '...');
+      return value;
+    }
+  }
+  
+  // Try to get from window.ENV (static file - production)
   if (typeof window !== 'undefined' && window.ENV && window.ENV[key]) {
     return window.ENV[key];
   }
@@ -17,6 +26,7 @@ function getStaticEnvVar(key: string, fallback: string = ''): string {
     return process.env[key];
   }
   
+  console.warn(`⚠️  Variable ${key} not found, using fallback:`, fallback);
   return fallback;
 }
 
@@ -34,8 +44,16 @@ export const API_CONFIG = {
   // Base URL for external API
   BASE_URL: getStaticEnvVar('NEXT_PUBLIC_API_BASE_URL', ''),
   API_KEY: getStaticEnvVar('NEXT_PUBLIC_API_KEY', ''),
-  
 } as const;
+
+// Debug log in development
+if (process.env.NODE_ENV === 'development') {
+  console.log('🔧 API_CONFIG initialized:', {
+    BASE_URL: API_CONFIG.BASE_URL ? API_CONFIG.BASE_URL.substring(0, 50) + '...' : '❌ EMPTY',
+    API_KEY: API_CONFIG.API_KEY ? '✅ Configured' : '❌ EMPTY',
+    NODE_ENV: process.env.NODE_ENV
+  });
+}
 
 /**
  * Core API request function

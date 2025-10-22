@@ -142,22 +142,19 @@ export function ContactForm({ className = '' }: ContactFormProps) {
       if (result.success) {
         setSubmitStatus('success');
         // Limpiar formulario
-        const cleanData: FormData = {};
-        contactData.formFields.forEach(field => {
-          cleanData[field.name] = '';
+        setFormData({
+          full_name: '',
+          email: '',
+          phone: '',
+          company: '',
+          product_type: '',
+          quantity: '',
+          message: '',
         });
-        setFormData(cleanData);
-        setErrors({});
-        
-        console.log('✅ Formulario enviado exitosamente');
-      } else {
-        throw new Error(result.message || 'Error al enviar el formulario');
+        setErrors({message: result.message});
       }
     } catch (error) {
-      console.error('❌ Error al enviar formulario:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
+      setErrors({message: error instanceof Error ? error.message : String(error)});
     }
   };
 
