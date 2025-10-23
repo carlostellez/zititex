@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next'
 import { seoConfig } from '@/config/seo'
 import { productsData } from '@/data/productsData'
 
+export const dynamic = 'force-static'
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = seoConfig.siteUrl
   
@@ -35,14 +37,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
   
-  // URLs de productos (para rich snippets)
-  const productUrls = productsData.products.map((product) => ({
-    url: `${baseUrl}#producto-${product.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
+  // URLs de categorías y productos (para rich snippets)
+  const categoryAndProductUrls: MetadataRoute.Sitemap = []
   
-  return [mainPage, ...sections, ...productUrls]
+  productsData.categories.forEach((category) => {
+    // URL de la categoría
+    categoryAndProductUrls.push({
+      url: `${baseUrl}#${category.id}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    })
+    
+    // URLs de productos dentro de la categoría
+    category.products.forEach((product) => {
+      categoryAndProductUrls.push({
+        url: `${baseUrl}#producto-${product.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      })
+    })
+  })
+  
+  return [mainPage, ...sections, ...categoryAndProductUrls]
 }
 

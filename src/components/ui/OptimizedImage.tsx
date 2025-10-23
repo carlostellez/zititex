@@ -82,13 +82,13 @@ export function OptimizedImage({
         onError={handleError}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        fetchpriority={priority ? 'high' : 'low'}
         className={`
           w-full h-full object-cover
           transition-all duration-700
           ${isLoading ? 'scale-110 blur-md opacity-0' : 'scale-100 blur-0 opacity-100'}
           ${hasError ? 'opacity-50 grayscale' : ''}
         `}
+        {...(priority && { fetchpriority: 'high' } as any)}
         {...props}
       />
       
