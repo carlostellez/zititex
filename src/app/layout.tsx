@@ -14,7 +14,10 @@ import {
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter'
+  variable: '--font-inter',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = baseMetadata

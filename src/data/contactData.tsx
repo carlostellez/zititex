@@ -104,7 +104,7 @@ export const contactData: ContactSection = {
 
   location: {
     name: "Zititex - Planta de Producción",
-    address: "Cl 18 sur 12g 45",
+    address: "Cl 18 Sur # 12G - 45",
     city: "Bogotá",
     country: "Colombia",
     postalCode: "110111",

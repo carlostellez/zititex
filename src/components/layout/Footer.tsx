@@ -86,7 +86,7 @@ const contactInfo: ContactInfo[] = [
       </svg>
     ),
     label: 'Ubicación',
-    value: 'Cl 19 sur 12g 45, Bogotá, Colombia',
+    value: 'Cl 18 Sur # 12G - 45, Bogotá, Colombia',
   },
   {
     icon: (

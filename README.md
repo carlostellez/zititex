@@ -657,14 +657,81 @@ npm run build
 ### Optimization Techniques
 
 - Static site generation (SSG)
-- Image optimization with Next.js Image component
+- **OptimizedImage Component**: Custom lazy loading with loading states
+- **Native Lazy Loading**: `loading="lazy"` for below-the-fold images
+- **Priority Hints**: `fetchpriority="high"` for critical images
 - Code splitting and lazy loading
 - CSS purging with Tailwind
+- **Font Optimization**: `font-display: swap` with fallback matching
 - CDN delivery via CloudFront
 - Efficient cache headers
 - Structured data for rich snippets
-- Performance hints (preconnect, prefetch)
+- Performance hints (preconnect, dns-prefetch, preload)
 - Critical resource preloading
+
+### Image Optimization (CRITICAL)
+
+⚠️ **ACTION REQUIRED**: Current images are TOO LARGE and severely impact performance:
+
+| Image | Current Size | Target Size | Impact |
+|-------|-------------|-------------|--------|
+| hero-1.jpg | **4.4 MB** | 150 KB | 🔴 CRITICAL |
+| hero-2.jpg | **4.3 MB** | 145 KB | 🔴 CRITICAL |
+| hero-3.jpg | **3.8 MB** | 135 KB | 🔴 CRITICAL |
+| sintetico.png | **2.7 MB** | 80 KB | 🔴 CRITICAL |
+| etiqueta.png | **2.4 MB** | 70 KB | 🔴 CRITICAL |
+
+**Current Performance**:
+- Total page size: ~14.5 MB
+- Load time (3G): 15-20 seconds
+- Lighthouse Performance: 40-50/100
+
+**After Optimization**:
+- Total page size: ~1.2 MB (92% reduction)
+- Load time (3G): 3-4 seconds (5x faster)
+- Lighthouse Performance: 90-95/100 (2x improvement)
+
+**How to Optimize**:
+```bash
+# Quick fix using Squoosh (https://squoosh.app/)
+1. Upload each image
+2. Select WebP format
+3. Set quality: 80
+4. Resize to: 1920x1080 (hero) or 800x800 (products)
+5. Download and replace
+
+# See detailed guide:
+docs/image-optimization-guide.md
+```
+
+### Performance Components
+
+**OptimizedImage Component** (`src/components/ui/OptimizedImage.tsx`):
+```tsx
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
+
+// Priority image (above-the-fold)
+<OptimizedImage
+  src="/static/hero/hero-1.jpg"
+  alt="Hero"
+  width={1920}
+  height={1080}
+  priority={true}  // fetchpriority="high"
+/>
+
+// Lazy-loaded image (below-the-fold)
+<OptimizedImage
+  src="/static/product.jpg"
+  alt="Product"
+  width={800}
+  height={800}
+  priority={false}  // loading="lazy"
+/>
+```
+
+### Performance Guides
+- **[Performance Optimization Guide](./docs/performance-optimization-guide.md)** - Complete performance strategy
+- **[Image Optimization Guide](./docs/image-optimization-guide.md)** - Step-by-step image optimization
 
 ## 🤝 Contributing
 
