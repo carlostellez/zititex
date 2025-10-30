@@ -275,6 +275,12 @@ aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths "/*"
 **Quick Start Options**:
 - [S3 Only Quick Start](./docs/s3-only-quick-start.md) - Get live in 10 minutes (HTTP only)
 - [Full AWS S3 + CloudFront Guide](./docs/aws-s3-deployment.md) - Complete production setup (HTTPS, CDN)
+- [CloudFront + GoDaddy Setup](./docs/cloudfront-godaddy-setup.md) - Configure custom domain with CloudFront and GoDaddy DNS
+- [Aurora + Lambda Setup](./docs/aurora-lambda-setup.md) - Configure AWS Aurora database with Lambda (VPC access)
+
+**Troubleshooting Guides**:
+- [How to Delete VPC](./docs/how-to-delete-vpc.md) - Complete guide to delete VPC and all associated resources
+- [Aurora Connection Script](./scripts/test-aurora-connection.sh) - Diagnose Aurora connectivity issues
 
 ## 🔌 API Design
 

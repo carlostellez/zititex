@@ -51,7 +51,15 @@ export function Contact({ className = '' }: ContactProps) {
           </h3>
           {info.href ? (
             <a
-              href={info.href}
+              href={(() => {
+                if (info.id === 'whatsapp' && info.href) {
+                  // Normaliza wa.me → api.whatsapp.com/send?phone=NNN
+                  const match = info.href.match(/wa\.me\/(\+?\d+)/);
+                  const phone = match?.[1]?.replace(/^\+/, '') || '573027413967';
+                  return `https://api.whatsapp.com/send?phone=${phone}`;
+                }
+                return info.href;
+              })()}
               className={`text-lg font-medium hover:underline transition-colors ${
                 mounted && theme === 'light' 
                   ? 'text-blue-600 hover:text-blue-700' 

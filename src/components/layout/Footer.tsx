@@ -27,40 +27,58 @@ interface FooterProps {
   className?: string;
 }
 
+// Normaliza el enlace de WhatsApp para evitar 404 detrás de S3/CloudFront
+const getNormalizedWhatsAppHref = (): string => {
+  const candidate = contactData.contactInfo.find(item => item.id === 'whatsapp')?.href || 'https://wa.me/573027413967';
+  try {
+    // Si ya es api.whatsapp.com, devolver tal cual
+    if (candidate.includes('api.whatsapp.com')) return candidate;
+    // Extraer número desde wa.me/NNN (eliminar '+')
+    const match = candidate.match(/wa\.me\/(\+?\d+)/);
+    const phone = match?.[1]?.replace(/^\+/, '') || '573027413967';
+    return `https://api.whatsapp.com/send?phone=${phone}`;
+  } catch {
+    return 'https://api.whatsapp.com/send?phone=573027413967';
+  }
+};
+
 const socialLinks: SocialLink[] = [
   {
-    name: 'Facebook',
-    href: 'https://facebook.com/zititex',
+    name: 'Instagram',
+    href: 'https://www.instagram.com/ziti.tex?utm_source=qr&igsh=ejRjZWFhdTVrbWt4',
     icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5z"/>
+        <path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"/>
+        <circle cx="17.5" cy="6.5" r="1.25" />
       </svg>
     ),
   },
   {
-    name: 'Instagram',
-    href: 'https://instagram.com/zititex',
+    name: 'TikTok',
+    href: 'https://www.tiktok.com/@zititex?_t=ZS-90nWzWgkenc&_r=1',
     icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12.017 0C5.396 0 .029 5.367.029 11.987C.029 18.607 5.396 23.974 12.017 23.974s11.987-5.367 11.987-11.987C24.004 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.596-3.205-1.533l.002.002a4.821 4.821 0 01-1.226-3.235c0-2.672 2.167-4.839 4.839-4.839s4.839 2.167 4.839 4.839-2.167 4.839-4.839 4.839l-.41-.073zm7.718-1.533c-.757.937-1.908 1.533-3.205 1.533l-.41.073c-2.672 0-4.839-2.167-4.839-4.839s2.167-4.839 4.839-4.839 4.839 2.167 4.839 4.839a4.821 4.821 0 01-1.224 3.233z"/>
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M13.7 3.001c.39 2.018 1.756 3.458 3.75 3.61v2.27c-1.328-.037-2.538-.42-3.75-1.19v5.71c0 5.13-5.585 6.7-8.15 3.01-.94-1.29-.79-3.08.35-4.16 1.38-1.31 3.19-.97 3.19-.97v2.28c-.52-.16-1.08-.08-1.53.21-.78.52-.99 1.63-.47 2.41.98 1.46 3.83 1.13 3.83-1.5V3h2.78z"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/zititex/',
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4.983 3.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5zM3 9h4v12H3V9zm7 0h3.8v1.65h.05c.53-.95 1.83-1.95 3.76-1.95C21.21 8.7 22 11 22 14.2V21H18v-6c0-1.43-.03-3.27-2-3.27-2 0-2.31 1.56-2.31 3.17V21H10V9z"/>
       </svg>
     ),
   },
   {
     name: 'WhatsApp',
-    href: contactData.contactInfo.find(item => item.id === 'whatsapp')?.href || 'https://wa.me/+573027413967', // Usar el número real de WhatsApp de contactData
+    href: getNormalizedWhatsAppHref(),
     icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
-      </svg>
-    ),
-  },
-  {
-    name: 'Email',
-    href: 'mailto:info@zititex.com',
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.904.732-1.636 1.636-1.636h1.831l8.533 6.364 8.533-6.364h1.831c.904 0 1.636.732 1.636 1.636z"/>
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.52 3.48A11.94 11.94 0 0 0 12.01 0C5.39 0 .02 5.37.02 11.99c0 2.11.55 4.19 1.6 6.02L0 24l6.07-1.59a11.96 11.96 0 0 0 5.94 1.58h.01c6.62 0 11.99-5.37 11.99-11.99a11.9 11.9 0 0 0-3.49-8.52zM12 22.03h-.01a10.02 10.02 0 0 1-5.1-1.4l-.36-.21-3.74.98.99-3.65-.24-.37a10 10 0 1 1 18.55-5.77 10.03 10.03 0 0 1-10.09 10.42z"/>
+        <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35z"/>
       </svg>
     ),
   },
@@ -115,7 +133,7 @@ export function Footer({ className = '' }: FooterProps) {
 
   const handleLinkClick = (href: string, external = false) => {
     if (external || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('https://') || href.startsWith('http://')) {
-      window.open(href, '_blank');
+      window.open(href, '_blank', 'noopener,noreferrer');
     } else if (href.startsWith('#')) {
       const element = document.querySelector(href);
       element?.scrollIntoView({ behavior: 'smooth' });

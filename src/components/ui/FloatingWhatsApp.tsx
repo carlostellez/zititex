@@ -75,20 +75,16 @@ export function FloatingWhatsApp({
   }, [mounted, showTooltip]);
 
   const handleWhatsAppClick = () => {
-    // Get the WhatsApp contact from contactData
-    const whatsappContact = contactData.contactInfo.find(item => 
-      item.id === 'whatsapp'
-    );
-    
-    if (whatsappContact?.href) {
-      // Create a pre-filled message
-      const message = encodeURIComponent(
-        '¡Hola! Me interesa conocer más sobre sus etiquetas y marquillas para textiles. ¿Podrían brindarme información sobre sus productos y servicios?'
-      );
-      
-      const whatsappUrl = `${whatsappContact.href}&text=${message}`;
-      window.open(whatsappUrl, '_blank');
-    }
+    const whatsappContact = contactData.contactInfo.find(item => item.id === 'whatsapp');
+    const baseHref = whatsappContact?.href || 'https://wa.me/573027413967';
+
+    // Normalizar a api.whatsapp.com/send?phone=NNN
+    let phone = '573027413967';
+    const match = baseHref.match(/wa\.me\/(\+?\d+)/);
+    if (match?.[1]) phone = match[1].replace(/^\+/, '');
+    const message = encodeURIComponent('¡Hola! Me interesa conocer más sobre sus etiquetas y marquillas para textiles. ¿Podrían brindarme información sobre sus productos y servicios?');
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
   const getPositionClasses = () => {
