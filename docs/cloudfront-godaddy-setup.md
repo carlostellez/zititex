@@ -190,6 +190,7 @@ Region: US East (N. Virginia)
 **Guarda el ARN del certificado**, lo necesitarás:
 ```
 arn:aws:acm:us-east-1:123456789:certificate/abc-def-ghi-123
+arn:aws:acm:us-east-1:910162731648:certificate/31b38994-8485-44d0-954e-b0b4806f16c6
 ```
 
 ---
